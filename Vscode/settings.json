@@ -1,0 +1,78 @@
+{
+  "workbench.iconTheme": "material-icon-theme",
+  "files.autoSave": "afterDelay",
+  "explorer.confirmDelete": false,
+  "code-runner.runInTerminal": true,
+  "window.customTitleBarVisibility": "auto",
+  "redhat.telemetry.enabled": false,
+  "cmake.options.statusBarVisibility": "visible",
+  "git.autofetch": true,
+  "cSpell.userWords": [
+    "Calcuse",
+    "Cframe",
+    "Crun",
+    "elif",
+    "leetcode",
+    "sqlplus",
+    "Zouari"
+  ],
+  "editor.linkedEditing": true,
+  "doxdocgen.generic.authorEmail": "zouariomar20@gmail.com",
+  "doxdocgen.generic.authorName": "@ZouariOmar",
+  "doxdocgen.generic.useGitUserEmail": false,
+  "doxdocgen.generic.useGitUserName": false,
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.minimap.autohide": true,
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "editor.formatOnPaste": true,
+  "eslint.format.enable": true,
+  "liveServer.settings.donotVerifyTags": true,
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "C_Cpp.clang_format_fallbackStyle": "LLVM",
+  "C_Cpp.clang_format_style": "{ BasedOnStyle: LLVM, IndentWidth: 2, ColumnLimit: 0, BreakBeforeBraces: Attach, AllowShortFunctionsOnASingleLine: InlineOnly }",
+  "git.confirmSync": false,
+  "editor.tabSize": 2,
+  "cmake.pinnedCommands": [
+    "workbench.action.tasks.configureTaskRunner",
+    "workbench.action.tasks.runTask"
+  ],
+  "git.enableSmartCommit": true,
+  "explorer.confirmDragAndDrop": false,
+  "explorer.confirmPasteNative": false,
+  "terminal.integrated.fontFamily": "'0xProto Nerd Font'",
+  "scm.inputFontSize": 14,
+  "terminal.integrated.fontSize": 12,
+  "editor.fontFamily": "'0xProto Nerd Font'",
+  "workbench.settings.applyToAllProfiles": [
+  
+  
+  
+
+  ],
+  "C_Cpp_Runner.useLinkTimeOptimization": true,
+  "[qml]": {
+    "editor.defaultFormatter": "theqtcompany.qt-qml"
+  },
+  "qt-core.qtInstallationRoot": "/home/zouari_omar/Qt",
+  "liveServer.settings.donotShowInfoMsg": true,
+  "chat.commandCenter.enabled": false,
+  "java.help.collectErrorLog": true,
+  "settingsSync.ignoredExtensions": [
+
+  ],
+  "workbench.activityBar.location": "top",
+  "workbench.panel.showLabels": false
+}
+
