@@ -29,6 +29,9 @@ sudo pacman -S ccache
 # Install nodejs and npm
 sudo pacman -Syu nodejs npm
 
+# Install yarn
+sudo pacman -Sy yarn
+
 # Install Qt6 base development pkgs
 sudo pacman -S qtcreator-devel(qtcreator) qt6-base qt6-3d qt6-multimedia qt6-network qt6-tools qt6-svg qt6-wayland
 
@@ -180,3 +183,22 @@ sudo cmake --install .
 # Install xclip
 sudo pacman -S xclip
 
+# Install nnn
+sudo pacman -S nnn
+
+# Install n³ plugins
+# See https://github.com/jarun/nnn/tree/master/plugins
+# Plugins are installed to `${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins`
+sh -c "$(curl -Ls https://raw.githubusercontent.com/jarun/nnn/master/plugins/getplugs)" # The following command installs or updates (after backup) all plugins
+export NNN_PLUG='f:finder;o:fzopen;p:mocq;d:diffs;t:nmount;v:imgview' # Set environment variable NNN_PLUG to assign keybinds and invoke plugins directly using the plugin shortcut (;) followed by the assigned key character
+
+# Install pio-cli and make executable globally (See https://docs.platformio.org/en/latest/core/index.html)
+curl -fsSL -o get-platformio.py https://raw.githubusercontent.com/platformio/platformio-core-installer/master/get-platformio.py
+python3 get-platformio.py
+echo "export PATH=$PATH:$HOME/.local/bin" >> ~/.bashrc
+sudo ln -s ~/.platformio/penv/bin/platformio ~/.local/bin/platformio
+sudo ln -s ~/.platformio/penv/bin/pio ~/.local/bin/pio
+sudo ln -s ~/.platformio/penv/bin/piodebuggdb ~/.local/bin/piodebuggdb
+
+# Install freerdp for remote connections
+sudo pacman -Syu freerdp
