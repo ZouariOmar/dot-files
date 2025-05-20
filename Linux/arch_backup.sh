@@ -202,3 +202,7 @@ sudo ln -s ~/.platformio/penv/bin/piodebuggdb ~/.local/bin/piodebuggdb
 
 # Install freerdp for remote connections
 sudo pacman -Syu freerdp
+
+# Install GLAD and GLFW for openGL
+# See https://glad.dav1d.de for GLAD
+sudo pacman -Sy glad glfw
