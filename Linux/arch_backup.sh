@@ -206,3 +206,9 @@ sudo pacman -Syu freerdp
 # Install GLAD and GLFW for openGL
 # See https://glad.dav1d.de for GLAD
 sudo pacman -Sy glad glfw
+
+# Install nlohmann-json for .json parsing
+sudo pacman -Sy nlohmann-json
+
+# Install gradle
+sudo pacamn -Sy gradle

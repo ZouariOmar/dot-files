@@ -30,7 +30,8 @@ alias gcb='git checkout -b'    # Create a new Git branch and move to the new bra
 alias gl="git log --oneline"   # Show the log as a single line
 alias gs="git status"          # Check the status of your git repo
 alias gd='git diff'            # View the difference
-alias lgit='lazygit'           # Open `lazygit`
+alias lg='lazygit'             # Open `lazygit`
+
 # System Management Aliases
 alias sysu="sudo pacman -Syu"                  # Updating package database and upgrading system
 alias sysc="sudo pacman -Sc"                   # Clearing unused package cache
@@ -47,8 +48,8 @@ alias df="df -h"                               # Show disk usage with human-read
 alias top="htop"                               # Use htop for a more interactive process monitor
 
 # Network Aliases
-alias private_ip="ip a | grep inet | grep -v inet6 | awk '{print $2}' | cut -d/ -f1" # Get Private IP Address
-alias public_ip="curl -s ifconfig.me"                                                # Get Public IP Address
+alias PRIVATE_IP="ip a | grep inet | grep -v inet6 | awk '{print $2}' | cut -d/ -f1" # Get Private IP Address
+alias PUBLIC_IP="curl -s ifconfig.me"                                                # Get Public IP Address
 
 # Docker Aliases
 alias dps="docker ps"          # List running containers
@@ -64,34 +65,6 @@ export PATH=$PATH:$HOME/.local/bin
 if [ -f /usr/share/bash-completion/bash_completion ]; then
   . /usr/share/bash-completion/bash_completion
 fi
-
-# The `service` function provides a shorthand for managing system services using systemctl.
-# It requires exactly two arguments:
-#   1. <action>: The action to perform (e.g., start, stop, restart, status).
-#   2. <service_name>: The name of the service to manage (e.g., apache2, mariadb, nginx).
-#
-# Usage:
-#   service <action> <service_name>
-# Example:
-#   service start apache2
-#   service restart mariadb
-#
-# If the function is called with an incorrect number of arguments, it displays an error message
-# and exits without executing the command.
-#
-# Arguments:
-#   "$@" - Passes all provided arguments to the `systemctl` command.
-# Returns:
-#   1 - If the number of arguments is not equal to 2.
-#   0 - If the command executes successfully.
-service() {
-  if [ "$#" -ne 2 ]; then
-    echo "Error: This function requires exactly 2 arguments."
-    echo "Usage: service <action> <service_name>"
-    return 1
-  fi
-  sudo systemctl "$@"
-}
 
 # The `spkg` function searches for an installed package in the system using `pacman`.
 # It takes exactly one argument:
@@ -142,60 +115,6 @@ rmpkg() {
     return 1
   fi
   sudo pacman -Rns "$1"
-}
-
-# Oracle Database Management Function
-# This function starts or stops an Oracle Database container running in Docker.
-# Usage:
-#   oracle start - Starts the Oracle Database container and logs in via SQL*Plus.
-#   oracle stop  - Stops the Oracle Database container.
-oracle() {
-  if [ "$#" -ne 1 ]; then
-    echo "Usage: oracle <start|stop>"
-    return 1
-  fi
-
-  case $1 in
-  'start')
-    echo "Starting Oracle Database container..."
-
-    # Enable and start the Docker service
-    sudo systemctl enable docker
-    sudo systemctl start docker
-
-    # Login to Docker
-    docker login
-
-    # Start Oracle container
-    docker start oracle-db
-
-    # Export Oracle library path
-    export LD_LIBRARY_PATH=/usr/local/lib/oracle:$LD_LIBRARY_PATH
-
-    # Check Oracle listener status
-    docker exec -it oracle-db bash -c "lsnrctl status"
-
-    # Log into SQL*Plus inside the container
-    docker exec -it oracle-db sqlplus sys/sys@//localhost:1521/orclpdb1 as sysdba
-    ;;
-  'stop')
-    echo "Stopping Oracle Database container..."
-
-    # Stop Oracle container
-    docker stop oracle-db
-
-    # Logout from Docker
-    docker logout
-
-    # Stop and disable Docker service
-    sudo systemctl disable docker
-    sudo systemctl stop docker
-    ;;
-  *)
-    echo "Invalid option. Usage: oracle <start|stop>"
-    return 1
-    ;;
-  esac
 }
 
 # Launch nnn and change to the last visited directory on exit
