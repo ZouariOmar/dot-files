@@ -19,33 +19,35 @@ alias ..="cd ..;pwd"     # Go up one directory
 alias ...="cd ../..;pwd" # Go up two directories
 alias ~="cd ~;pwd"       # Go to home directory
 alias fonts="fc-list"    # List all availble fonts
+alias nnn="nnn -dUi"     # n³ with more details
 
 # Git Aliases
-alias ga="git add"             # Add files to staging
+alias ga='git add'             # Add files to staging
 alias gaa='git add --all'      # Add all files to Git
-alias gc="git commit"          # Commit changes
-alias gca="git commit --amend" # Amend the last commit
-alias gc="git checkout"        # Checkout a branch or file
+alias gc='git commit'          # Commit changes
+alias gca='git commit --amend' # Amend the last commit
+alias gc='git checkout'        # Checkout a branch or file
 alias gcb='git checkout -b'    # Create a new Git branch and move to the new branch at the same time
-alias gl="git log --oneline"   # Show the log as a single line
-alias gs="git status"          # Check the status of your git repo
+alias gl='git log --oneline'   # Show the log as a single line
+alias gs='git status'          # Check the status of your git repo
 alias gd='git diff'            # View the difference
 alias lg='lazygit'             # Open `lazygit`
 
 # System Management Aliases
-alias sysu="sudo pacman -Syu"                  # Updating package database and upgrading system
-alias sysc="sudo pacman -Sc"                   # Clearing unused package cache
-alias yayu="yay -Syu"                          # Update all installed packages using yay
-alias yayc="yay -Sc"                           # Clean up unnecessary package files using yay
-alias lspacman="pacman -Q"                     # List All Installed pacman Packages
-alias cpacman="sudo pacman -R $(pacman -Qtdq)" # Remove unused packages
-alias lsyay="yay -Qdt"                         # List All Installed AUR Packages
-alias wmi="whoami"                             # Display the current username
-alias c="clear"                                # Clear the terminal screen
-alias h="history"                              # Show command history
-alias mkd='mkdir -p -v'                        # Make a directory and all parent directories with verbosity
-alias df="df -h"                               # Show disk usage with human-readable units
-alias top="htop"                               # Use htop for a more interactive process monitor
+alias pacmanu="sudo pacman -Syu"                # Updating package database and upgrading system
+alias pacmanc="sudo pacman -Sc"                 # Clearing unused package cache
+alias pacmanls="pacman -Q"                      # List All Installed pacman Packages
+alias pacmanrm="sudo pacman -R $(pacman -Qtdq)" # Remove unused pacman packages
+alias yayu="yay -Syu"                           # Update all installed packages using yay
+alias yayc="yay -Sc"                            # Clean up unnecessary package files using yay
+alias yayls="yay -Qdt"                          # List All Installed AUR Packages
+alias yayrm="yay -R $(yay -Qtdq)"               # Remove unused yay packages
+alias wmi="whoami"                              # Display the current username
+alias c="clear"                                 # Clear the terminal screen
+alias h="history"                               # Show command history
+alias mkd="mkdir -p -v"                         # Make a directory and all parent directories with verbosity and go into it
+alias df="df -h"                                # Show disk usage with human-readable units
+alias top="htop"                                # Use htop for a more interactive process monitor
 
 # Network Aliases
 alias PRIVATE_IP="ip a | grep inet | grep -v inet6 | awk '{print $2}' | cut -d/ -f1" # Get Private IP Address

@@ -212,3 +212,23 @@ sudo pacman -Sy nlohmann-json
 
 # Install gradle
 sudo pacamn -Sy gradle
+
+# Install dirb
+yay -Sy dirb
+
+# Install postgresql
+sudo pacman -Sy postgresql
+sudo -iu postgres initdb -D /var/lib/postgres/data # Run it if this is a fresh install
+
+# Install Oodo (see https://www.odoo.com/documentation/17.0/fr/administration/on_premise/source.html)
+# Install `odoo-venv` or `odoo18-nightly` (Quick oodo setup)
+yay -Sy odoo
+
+# Install wheel-building helpers (required)
+sudo pacman -S python-wheel python-setuptools # python-pip (optional)
+
+# Install pyenv (manage many python version)
+sudo pacman -Sy pyenv
+
+# Install 'pacman-contrib' (Automatically remove unused pkg's)
+sudo pacman -S pacman-contrib # Usage: paccache -r
