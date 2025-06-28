@@ -2,7 +2,7 @@
 # Author: @ZouariOmar
 
 # Targed bash files
-files=(".bash_profile" ".bashrc")
+files=(".bash_profile" ".bashrc" "bash_colors")
 
 # Conserve the current local usr pkg
 for i in "${!files[@]}"; do
