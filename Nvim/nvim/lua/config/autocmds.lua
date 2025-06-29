@@ -21,17 +21,16 @@ function InsertDoxygenFileHeader()
   local filename = vim.fn.expand("%:t")
   local ext = filename:match("^.+(%..+)$") or ""
   local name_without_ext = filename:gsub("%.cpp", ""):gsub("%.c", ""):gsub("%.h", ""):gsub("%.hpp", "")
-
   local is_source = (ext == ".cpp" or ext == ".c")
   local brief = name_without_ext .. (is_source and " source file" or " header file")
 
   local header = {
     "/**",
-    " * @file    " .. filename,
-    " * @author  @ZouariOmar (zouariomar20@gmail.com)",
-    " * @brief   " .. brief,
-    " * @version 0.1",
-    " * @date    " .. os.date("%Y-%m-%d"),
+    " * @file      " .. filename,
+    " * @author    @ZouariOmar (zouariomar20@gmail.com)",
+    " * @brief     " .. brief,
+    " * @version   0.1",
+    " * @date      " .. os.date("%Y-%m-%d"),
     " * @copyright Copyright (c) 2025",
     " * @link https://github.com/ZouariOmar ZouariOmar @endlink",
     " */",
@@ -45,19 +44,5 @@ end
 -- Auto-insert for new C/C++ files
 vim.api.nvim_create_autocmd("BufNewFile", {
   pattern = { "*.cpp", "*.c", "*.h", "*.hpp" },
-  callback = function()
-    InsertDoxygenFileHeader()
-  end,
-})
-
--- Define a custom highlight group for Doxygen tags
-vim.api.nvim_set_hl(0, "DoxygenTag", { fg = "#FFA500" }) -- Orange
-
--- Auto-match @tags in comments for C/C++ files
-vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "c", "cpp", "h", "hpp" },
-  callback = function()
-    -- Highlight @param, @return, etc.
-    vim.fn.matchadd("DoxygenTag", "@\\w\\+")
-  end,
+  callback = InsertDoxygenFileHeader,
 })

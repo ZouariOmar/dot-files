@@ -2,26 +2,18 @@
 -- Default keymaps that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/keymaps.lua
 -- Add any additional keymaps here
 
+-- Keymap to toggle floating terminal with <leader>t
 local Terminal = require("toggleterm.terminal").Terminal
-
-local float_term = Terminal:new({
-  direction = "float",
-  float_opts = {
-    border = "rounded",
-    width = 100,
-    height = 30,
-  },
-  hidden = true,
-  start_in_insert = true,
-})
-
--- toggle terminal
+local floatterm = Terminal:new({ direction = "float" })
 vim.keymap.set("n", "<leader>t", function()
-  float_term:toggle()
+  floatterm:toggle()
 end, { desc = "Toggle Floating Terminal" })
 
 -- escape terminal mode
 vim.keymap.set("t", "<Esc>", [[<C-\><C-n>]], { desc = "Exit terminal mode" })
 
--- Manual trigger
-vim.api.nvim_set_keymap("n", "<leader>dh", [[:lua InsertDoxygenFileHeader()<CR>]], { noremap = true, silent = true })
+-- Manual Lua-based file header (custom)
+vim.keymap.set("n", "<leader>dh", [[:lua InsertDoxygenFileHeader()<CR>]], { noremap = true, silent = true })
+
+-- DoxygenToolkit function doc
+vim.keymap.set("n", "<leader>df", ":Dox<CR>", { noremap = true, silent = true })

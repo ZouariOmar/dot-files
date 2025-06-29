@@ -9,7 +9,10 @@ return {
         direction = "float",
         float_opts = {
           border = "rounded",
+          width = 100,
+          height = 30,
         },
+        hidden = true,
         start_in_insert = true,
       })
     end,

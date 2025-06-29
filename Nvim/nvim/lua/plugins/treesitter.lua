@@ -8,8 +8,8 @@ return {
       ensure_installed = { "cpp", "c", "python", "lua" },
       highlight = {
         enable = true,
+        additional_vim_regex_highlighting = true,
       },
-      -- Optional: add more settings here if needed
     },
   },
 }
