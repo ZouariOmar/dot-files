@@ -1,0 +1,54 @@
+{
+  "Bash Header Doc Block": {
+    "prefix": "doch",
+    "body": [
+      "# =========================================",
+      "# .FILE",
+      "#   ${1:filename.sh}",
+      "#",
+      "# .SYNOPSIS",
+      "#   ${2:Overview of script}",
+      "#",
+      "# .DESCRIPTION",
+      "#   ${3:Brief description of script}",
+      "#",
+      "# .PARAMETER ${4:parameter_name}",
+      "#   ${5:Description of parameter}",
+      "#",
+      "# .INPUTS",
+      "#   ${6:None}",
+      "#",
+      "# .OUTPUTS",
+      "#   ${7:None or e.g., /tmp/output.log}",
+      "#",
+      "# .NOTES",
+      "#   Version       : ${8:1.0}",
+      "#   Author        : ${9:@ZouariOmar} ${10:<zouariomar20@gmail.com>}",
+      "#   Created       : ${11:<YYYY-MM-DD>}",
+      "#   Change Log    : ${12:Initial version}",
+      "#",
+      "# .EXAMPLE",
+      "#   ${13:./script.sh --example 'value'}",
+      "# ========================================="
+    ],
+    "description": "Bash Header Doc Block with metadata and parameter help"
+  },
+  "Bash Funcions Doc Block": {
+    "prefix": "doc",
+    "body": [
+      "# -----------------------------------------",
+      "# .FUNCTION",
+      "#   ${1:Function name}",
+      "# .SYNOPSIS",
+      "#   ${2:Short description}",
+      "# .DESCRIPTION",
+      "#   ${3:More detailed explanation}",
+      "# .AUTHOR",
+      "#   ${4:@ZouariOmar} (${5:zouariomar20@gmail.com})",
+      "# .CREATED",
+      "#   ${6:<YYYY-MM-DD>}",
+      "# -----------------------------------------"
+    ],
+    "description": "Bash Funcions Doc Block"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "Javadoc Function": {
+    "prefix": "doc",
+    "body": [
+      "/**",
+      " * ${1:Summary of the method}",
+      " *",
+      " * @param ${2:param1} ${3:description}",
+      " * @param ${4:param2} ${5:description}",
+      " * @return ${6:description}",
+      " */"
+    ],
+    "description": "Java Javadoc for methods"
+  },
+  "Java File Header Javadoc": {
+    "prefix": "doch",
+    "body": [
+      "/**",
+      " * ${1:ClassName.java}",
+      " *",
+      " * ${2:Short description of this class/file.}",
+      " *",
+      " * @author ${2:@ZouariOmar} <${3:zouariomar20@gmail.com}>",
+      " * @version ${4:0.1}",
+      " * @since ${5:YYYY-MM-DD}",
+      " */"
+    ],
+    "description": "Javadoc-style file header for Java source files"
+  }
+}

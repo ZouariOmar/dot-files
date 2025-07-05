@@ -1,0 +1,30 @@
+{
+  "Doxygen Function": {
+    "prefix": "doc",
+    "body": [
+      "/**",
+      " * @brief ${1:Brief description of the function}",
+      " *",
+      " * @param ${2:param1} ${3:description}",
+      " * @param ${4:param2} ${5:description}",
+      " * @return ${6:description}",
+      " */"
+    ],
+    "description": "C++ Doxygen-style function doc"
+  },
+  "C++ File Header Doxygen": {
+    "prefix": "doch",
+    "body": [
+      "/**",
+      " * @file      ${1:filename.cpp}",
+      " * @author    ${2:@ZouariOmar} <${3:zouariomar20@gmail.com}>",
+      " * @brief     ${4:filename source file}",
+      " * @version   ${5:0.1}",
+      " * @date      ${6:DD/MM/YYYY}",
+      " * @copyright Copyright (c) ${7:YYYY}",
+      " * @link      ${8:https://github.com/ZouariOmar} ${9:ZouariOmar} @endlink",
+      " */"
+    ],
+    "description": "Doxygen-style file header for C++ source files"
+  }
+}

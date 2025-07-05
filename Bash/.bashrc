@@ -39,22 +39,22 @@ alias gd='git diff'            # View the difference
 alias lg='lazygit'             # Open `lazygit`
 
 # System Management Aliases
-alias pacu="sudo pacman -Syu"             # Updating package database and upgrading system
-alias pacc="sudo pacman -Sc"              # Clearing unused pacman cache
-alias paccc="sudo pacman -R pacman -Qtdq" # Remove unused pacman packages
-alias pacls="pacman -Qs"                  # List All Installed pacman Packages
-alias pacrm="sudo pacman -Rns $1"         # Remove a specific pacman package
-alias yayu="yay -Syu"                     # Update all installed packages using yay
-alias yayc="yay -Sc"                      # Clean up unnecessary package files using yay
-alias yaycc="yay -R yay -Qtdq"            # Remove unused yay packages
-alias yayls="yay -Qdt"                    # List All Installed AUR Packages
-alias yayrm="sudo pacman -Rns $1"         # Remove a specific yay package
-alias wmi="whoami"                        # Display the current username
-alias c="clear"                           # Clear the terminal screen
-alias h="history"                         # Show command history
-alias mkd="mkdir -pv"                     # Make a directory and all parent directories with verbosity and go into it
-alias df="df -h"                          # Show disk usage with human-readable units
-alias top="htop"                          # Use htop for a more interactive process monitor
+alias pacu="sudo pacman -Syu"                # Updating package database and upgrading system
+alias pacc="sudo pacman -Sc"                 # Clearing unused pacman cache
+alias paccc="sudo pacman -R $(pacman -Qtdq)" # Remove unused pacman packages
+alias pacls="pacman -Qs"                     # List All Installed pacman Packages
+alias pacrm="sudo pacman -Rns $1"            # Remove a specific pacman package
+alias yayu="yay -Syu"                        # Update all installed packages using yay
+alias yayc="yay -Sc"                         # Clean up unnecessary package files using yay
+alias yaycc="yay -R $(yay -Qtdq)"            # Remove unused yay packages
+alias yayls="yay -Qdt"                       # List All Installed AUR Packages
+alias yayrm="sudo yay -Rns $1"               # Remove a specific yay package
+alias wmi="whoami"                           # Display the current username
+alias c="clear"                              # Clear the terminal screen
+alias h="history"                            # Show command history
+alias mkd="mkdir -pv"                        # Make a directory and all parent directories with verbosity and go into it
+alias df="df -h"                             # Show disk usage with human-readable units
+alias top="htop"                             # Use htop for a more interactive process monitor
 
 # Network Aliases
 alias prvip="ip a | grep inet | grep -v inet6 | awk '{print $2}' | cut -d/ -f1" # Get Private IP Address

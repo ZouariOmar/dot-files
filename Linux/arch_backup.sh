@@ -232,3 +232,9 @@ sudo pacman -Sy pyenv
 
 # Install 'pacman-contrib' (Automatically remove unused pkg's)
 sudo pacman -S pacman-contrib # Usage: paccache -r
+
+# Install nmap
+sudo pacman -Sy nmap
+
+# Install lftp
+sudo pacman -Sy lftp

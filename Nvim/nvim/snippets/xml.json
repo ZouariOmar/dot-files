@@ -1,0 +1,70 @@
+{
+  "odoo-xml-doc-header": {
+    "prefix": "doch",
+    "body": [
+      "<!--",
+      "    ${1:Filename.xml}",
+      "",
+      "    ${2:Short description of this XML file}",
+      "",
+      "    @author ${3:@ZouariOmar} <${4:zouariomar20@gmail.com}>",
+      "    @version ${5:0.1}",
+      "    @since ${6:YYYY-MM-DD}",
+      "-->"
+    ],
+    "description": "File header comment for Odoo XML files"
+  },
+  "odoo-view": {
+    "prefix": "odoo",
+    "body": [
+      "<odoo>",
+      "</odoo>"
+    ],
+    "description": "Odoo <odoo> view"
+  },
+  "odoo-xml-record": {
+    "prefix": "odoor",
+    "body": [
+      "<record id=\"${1:your_record_id}\" model=\"${2:your.model}\">",
+      "    <field name=\"${3:field_name}\">${4:value}</field>",
+      "</record>"
+    ],
+    "description": "Odoo XML record block"
+  },
+  "odoo-field-selfclosing": {
+    "prefix": "odoof/",
+    "body": [
+      "<field name=\"${1:field_name}\" type=\"${2:type}\"/>"
+    ],
+    "description": "Odoo field with name and type (self-closing)"
+  },
+  "odoo-field-with-content": {
+    "prefix": "odoof",
+    "body": [
+      "<field name=\"${1:field_name}\" type=\"${2:type}\">${3:content}</field>"
+    ],
+    "description": "Odoo field with name, type, and content"
+  },
+  "odoo-menuitem": {
+    "prefix": "odoom/",
+    "body": [
+      "<menuitem id=\"${1:menu_id}\" name=\"${2:Menu Name}\" parent=\"${3:parent_menu_id}\" action=\"${4:action_id}\"/>"
+    ],
+    "description": "Odoo menuitem tag"
+  },
+  "odoo-record-empty": {
+    "prefix": "odoor/",
+    "body": [
+      "<record id=\"${1:record_id}\" model=\"${2:model.name}\"/>"
+    ],
+    "description": "Empty Odoo record element"
+  },
+  "odoo-list-view": {
+    "prefix": "odool",
+    "body": [
+      "<list>",
+      "</list>"
+    ],
+    "description": "Odoo <list> view"
+  }
+}

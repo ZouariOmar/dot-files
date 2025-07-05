@@ -1,0 +1,35 @@
+{
+  "Python Function Docstring": {
+    "prefix": "doc",
+    "body": [
+      "\"\"\"",
+      "${1:Summary of the function}",
+      "",
+      "Args:",
+      "    ${2:param1} (${3:type}): ${4:description}",
+      "",
+      "Returns:",
+      "    ${5:type}: ${6:description}",
+      "\"\"\""
+    ],
+    "description": "Python function docstring"
+  },
+  "Python File Header": {
+    "prefix": "doch",
+    "body": [
+      "\"\"\"",
+      "Module: ${1:module_name}.py",
+      "",
+      "${2:Short description of this module.}",
+      "",
+      "Author: ${3:@ZouariOmar} <${4:zouariomar20@gmail.com}>",
+      "Date: ${5:DD/MM/YYYY}",
+      "License: ${6:MIT}",
+      "Version: ${7:0.1}",
+      "\"\"\"",
+      "",
+      ""
+    ],
+    "description": "File-level module docstring"
+  }
+}
