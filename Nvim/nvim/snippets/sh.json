@@ -50,5 +50,34 @@
       "# -----------------------------------------"
     ],
     "description": "Bash Funcions Doc Block"
+  },
+  "help-function": {
+    "prefix": "help",
+    "body": [
+      "help() {",
+      "  echo -e \"\\${YELLOW}[FILE]\\${RESET}",
+      "  ${1:your_script_name.sh}",
+      "\\${YELLOW}[LINK]\\${RESET}",
+      "  ${2:https://github.com/ZouariOmar}",
+      "\\${YELLOW}[BRIEF]\\${RESET}",
+      "  ${3:Brief description of what this script/function does}",
+      "\\${YELLOW}[USAGE]\\${RESET}",
+      "  ${4:Example usage or setup instructions}",
+      "\\${YELLOW}[OPTIONS]\\${RESET}",
+      "  ${5:--option1 <arg> -- Description of option1}",
+      "  ${6:--option2       -- Description of option2}",
+      "  ${7:--help | -h     -- Display this help message}",
+      "\\${YELLOW}[VERSION]\\${RESET}",
+      "  ${8:1.0}",
+      "\\${YELLOW}[AUTHOR]\\${RESET}",
+      "  ${9:@ZouariOmar <zouariomar20@gmail.com>}",
+      "\\${YELLOW}[CREATED]\\${RESET}",
+      "  ${10:DD/MM/YYYY}",
+      "\\${YELLOW}[CHANGELOG]\\${RESET}",
+      "  ${11:Initial version}\"",
+      "  exit \\${EXIT_SUCCESS}",
+      "}"
+    ],
+    "description": "One-echo bash help function with colors and snippet placeholders"
   }
 }

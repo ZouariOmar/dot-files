@@ -3,14 +3,25 @@
     "prefix": "doc",
     "body": [
       "/**",
-      " * ${1:Summary of the method}",
+      " * ${1:Brief summary of the method.}",
       " *",
-      " * @param ${2:param1} ${3:description}",
-      " * @param ${4:param2} ${5:description}",
-      " * @return ${6:description}",
+      " * <p>${2:More detailed description or notes.}</p>",
+      " *",
+      " * @param ${3:param1} {@code ${4:description}}",
+      " * @param ${5:param2} ${6:description}",
+      " * ${7:@throws ${8:ExceptionType} ${9:conditions when this exception is thrown}}",
+      " * @return {@code ${10:description of the returned value}}",
+      " *",
+      " * @see ${17:RelatedClassOrMethod}",
+      " * @deprecated ${18:Reason and alternative}",
+      " *",
+      " * <pre>",
+      " * {@code",
+      " * ${19:// Example usage}",
+      " * }</pre>",
       " */"
     ],
-    "description": "Java Javadoc for methods"
+    "description": "Comprehensive Javadoc template with multiple tags for Java methods"
   },
   "Java File Header Javadoc": {
     "prefix": "doch",
@@ -18,13 +29,18 @@
       "/**",
       " * ${1:ClassName.java}",
       " *",
-      " * ${2:Short description of this class/file.}",
+      " * ${2:Short description of this class or file.}",
       " *",
-      " * @author ${2:@ZouariOmar} <${3:zouariomar20@gmail.com}>",
-      " * @version ${4:0.1}",
-      " * @since ${5:YYYY-MM-DD}",
+      " * <p>${3:Detailed explanation of the class, its responsibilities, and usage.}</p>",
+      " *",
+      " * @author ${4:@ZouariOmar (zouariomar20@gmail.com)}",
+      " * @version ${5:1.0}",
+      " * @since ${6:YYYY-MM-DD}",
+      " * @deprecated ${7:Reason and alternative}",
+      " * @see ${8:RelatedClassOrDocumentation}",
+      " * @serial ${9:Serialization details (if applicable)}",
       " */"
     ],
-    "description": "Javadoc-style file header for Java source files"
+    "description": "Professional Javadoc file header with many tags for Java source files"
   }
 }
