@@ -55,10 +55,12 @@ alias h="history"                            # Show command history
 alias mkd="mkdir -pv"                        # Make a directory and all parent directories with verbosity and go into it
 alias df="df -h"                             # Show disk usage with human-readable units
 alias top="htop"                             # Use htop for a more interactive process monitor
+alias hostname="cat /etc/hostname"           # Show the hostname
 
 # Network Aliases
 alias prvip="ip a | grep inet | grep -v inet6 | awk '{print $2}' | cut -d/ -f1" # Get Private IP Address
 alias pubip="curl -s ifconfig.me"                                               # Get Public IP Address
+alias shark='sudo tshark --color' 						# WireShark CLI with colors | Add -l for line-buffered (live monitoring mode)
 
 # Docker Aliases
 alias dps="docker ps"          # List running containers
@@ -69,6 +71,10 @@ alias dstop="docker stop"      # Stop a running container
 # Vim/Nvim Aliases
 alias v='vim'
 alias nv='nvim'
+
+# C/C++ Aliases
+alias g++='g++ -std=c++23 -Wall -Wextra -Wpedantic -O2'
+alias gcc='gcc -std=c17 -Wall -Wextra -Wpedantic -O2'
 
 # Show latest `$1` Arch Linux news before upgrading
 pacnews() {

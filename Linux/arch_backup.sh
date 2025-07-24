@@ -238,3 +238,15 @@ sudo pacman -Sy nmap
 
 # Install lftp
 sudo pacman -Sy lftp
+
+# Install openvpn
+sudo pacman -Sy openvpn
+
+# Install AnyDesk
+yay -S anydesk-bin
+
+# Install arm-none-eabi-gcc  compiler (for STM32 dev)
+sudo pacman -S arm-none-eabi-gcc    # Compiler
+sudo pacman -S arm-none-eabi-newlib # Headers
+
+

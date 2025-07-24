@@ -1,6 +1,11 @@
 CompileFlags:
-  Add: [
-    -I/usr/include/qt6,
-    -I/usr/include/opencv4,
-  ]
+  Remove:
+    # - "-mno-direct-extern-access"
+    # - "-fmodule-mapper=*"
+    # - "-fmodules-ts"
+    # - "-fdeps-format=*"
+  Add:
+    - "-std=c++23"
+    # - "-I/usr/include/qt6"
+    # - "-I/usr/include/opencv4"
 
