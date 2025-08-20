@@ -9,7 +9,7 @@
 
 <h1 align="center">
   <br>
-  <a href="https://github.com/ZouariOmar/DotFiles"><img src="Imgs/logo.png" alt="DotFiles" width="200"></a>
+  <a href="https://github.com/ZouariOmar/DotFiles"><img src="assets/logo.png" alt="DotFiles" width="200"></a>
   <br>
   DotFiles
   <br>

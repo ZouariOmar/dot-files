@@ -39,28 +39,30 @@ alias gd='git diff'            # View the difference
 alias lg='lazygit'             # Open `lazygit`
 
 # System Management Aliases
-alias pacu="sudo pacman -Syu"                # Updating package database and upgrading system
-alias pacc="sudo pacman -Sc"                 # Clearing unused pacman cache
-alias paccc="sudo pacman -R $(pacman -Qtdq)" # Remove unused pacman packages
-alias pacls="pacman -Qs"                     # List All Installed pacman Packages
-alias pacrm="sudo pacman -Rns $1"            # Remove a specific pacman package
-alias yayu="yay -Syu"                        # Update all installed packages using yay
-alias yayc="yay -Sc"                         # Clean up unnecessary package files using yay
-alias yaycc="yay -R $(yay -Qtdq)"            # Remove unused yay packages
-alias yayls="yay -Qdt"                       # List All Installed AUR Packages
-alias yayrm="sudo yay -Rns $1"               # Remove a specific yay package
-alias wmi="whoami"                           # Display the current username
-alias c="clear"                              # Clear the terminal screen
-alias h="history"                            # Show command history
-alias mkd="mkdir -pv"                        # Make a directory and all parent directories with verbosity and go into it
-alias df="df -h"                             # Show disk usage with human-readable units
-alias top="htop"                             # Use htop for a more interactive process monitor
-alias hostname="cat /etc/hostname"           # Show the hostname
+alias pacu="sudo pacman -Syu"                                     # Updating package database and upgrading system
+alias pacc="sudo pacman -Sc"                                      # Clearing unused pacman cache
+alias paccc="sudo pacman -Rns $(pacman -Qtdq)"                    # Remove unused pacman packages
+alias pacls="pacman -Qs"                                          # List All Installed pacman Packages
+alias pacrm="sudo pacman -Rns"                                    # Remove a specific pacman package
+alias yayu="yay -Syu"                                             # Update all installed packages using yay
+alias yayc="yay -Sc"                                              # Clean up unnecessary package files using yay
+alias yaycc="yay -Rns $(yay -Qtdq)"                               # Remove unused yay packages
+alias yayls="yay -Qs"                                             # List All Installed AUR Packages
+alias yayrm="sudo yay -Rns"                                       # Remove a specific yay package
+alias wmi="whoami"                                                # Display the current username
+alias c="clear"                                                   # Clear the terminal screen
+alias h="history"                                                 # Show command history
+alias mkd="mkdir -pv"                                             # Make a directory and all parent directories with verbosity and go into it
+alias df="df -h"                                                  # Show disk usage with human-readable units
+alias top="htop"                                                  # Use htop for a more interactive process monitor
+alias hostname="cat /etc/hostname"                                # Show the hostname
+alias wordlists='ll /usr/share/wordlists'                         # Show your wordlists sets
+alias clear_cache="sudo sh -c 'echo 3 > /proc/sys/vm/drop_caches" # Drops all pagecache, dentries, and inodes from the RAM
 
 # Network Aliases
 alias prvip="ip a | grep inet | grep -v inet6 | awk '{print $2}' | cut -d/ -f1" # Get Private IP Address
 alias pubip="curl -s ifconfig.me"                                               # Get Public IP Address
-alias shark='sudo tshark --color' 						# WireShark CLI with colors | Add -l for line-buffered (live monitoring mode)
+alias shark='sudo tshark --color'                                               # WireShark CLI with colors | Add -l for line-buffered (live monitoring mode)
 
 # Docker Aliases
 alias dps="docker ps"          # List running containers
@@ -75,6 +77,9 @@ alias nv='nvim'
 # C/C++ Aliases
 alias g++='g++ -std=c++23 -Wall -Wextra -Wpedantic -O2'
 alias gcc='gcc -std=c17 -Wall -Wextra -Wpedantic -O2'
+
+# Python Aliases
+alias jlab='jupyter-lab'
 
 # Show latest `$1` Arch Linux news before upgrading
 pacnews() {
@@ -115,5 +120,29 @@ if [ -f /usr/share/bash-completion/bash_completion ]; then
   . /usr/share/bash-completion/bash_completion
 fi
 
-# Platformio - export `$HOME/.local/bin/` directory to the PATH environmental variable
-export PATH=$PATH:$HOME/.local/bin
+# Set PIO
+export PLATFORMIO_HOME="$HOME/.local/bin"
+export PATH=$PATH:$PLATFORMIO_HOME
+
+# Set JAVA
+export JAVA_HOME=/usr/lib/jvm/java-24-openjdk
+export PATH=$JAVA_HOME/bin:$PATH
+
+# Set MAVEN
+export M2_HOME="$HOME/.m2/"
+
+# Set SDKMAN
+export PATH="$HOME/.sdkman/candidates/java/current/bin:$PATH"
+
+# Set Android SDK (last)
+export ANDROID_HOME=/opt/android-sdk
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+
+# Set EDITOR
+export EDITOR="nv"
+
+# THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+
+

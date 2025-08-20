@@ -243,10 +243,41 @@ sudo pacman -Sy lftp
 sudo pacman -Sy openvpn
 
 # Install AnyDesk
-yay -S anydesk-bin
+yay -Sy anydesk-bin
 
 # Install arm-none-eabi-gcc  compiler (for STM32 dev)
 sudo pacman -S arm-none-eabi-gcc    # Compiler
 sudo pacman -S arm-none-eabi-newlib # Headers
 
+# Install Hydra (Pen Test Tool)
+sudo pacman -Sy hydra
 
+# Install wordlists (Download a great set of wordlists. In /usr/share/wordlists)
+yay -Sy wordlists
+
+# Install RPM tools
+sudo pacman -Sy rpm-tools
+
+# Install Deb Dpkg
+sudo pacman -Sy dpkg
+
+# Install tesseract-ocr
+sudo pacman -Sy tesseract
+
+# Install jupyter
+sudo pacman -Sy jupyterlab # [Recommended]
+yay -Sy python-jupytext    # [optional] Convert .py to .ipynb       (for bash/nvim)
+yay -Sy jupyter-nbconvert  # [optional] Convert .ipynb to .html/.md (for bash/nvim)
+
+# Install zip
+sudo pacman -Sy zip
+
+# Install sdkman (i use it to install GraalVM)
+curl -s "https://get.sdkman.io" | bash
+
+# Install android sdk
+yay -Sy android-sdk-platform-tools
+yay -Sy android-sdk-cmdline-tools-latest # For `sdkmanager`
+
+# Install Android Studio (i use only for Visual Layout Editor)
+yay -Sy android-studio
