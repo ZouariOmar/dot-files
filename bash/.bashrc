@@ -132,11 +132,14 @@ export PATH=$JAVA_HOME/bin:$PATH
 export M2_HOME="$HOME/.m2/"
 
 # Set SDKMAN
-export PATH="$HOME/.sdkman/candidates/java/current/bin:$PATH"
+export PATH="$PATH:$HOME/.sdkman/candidates/java/current/bin"
 
-# Set Android SDK (last)
-export ANDROID_HOME=/opt/android-sdk
-export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools
+# Set Android SDK home
+export ANDROID_HOME=$HOME/Android/Sdk
+export PATH=$PATH:/opt/android-studio/bin
+export PATH=$PATH:$ANDROID_HOME/emulator
+export PATH=$PATH:$ANDROID_HOME/platform-tools
+export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
 
 # Set EDITOR
 export EDITOR="nv"
