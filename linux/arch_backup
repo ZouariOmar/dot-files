@@ -1,3 +1,30 @@
+#!/usr/bin/env bash
+# =========================================
+# .FILE
+#   arch_backup.sh
+#
+# .SYNOPSIS
+#   Arch linux backup script file
+#
+# .DESCRIPTION
+#   It hold arch linux softwares/tips that i used
+#
+# .INPUTS
+#   None
+#
+# .OUTPUTS
+#   None
+#
+# .NOTES
+#   Version       : 1.0
+#   Author        : @ZouariOmar <zouariomar20@gmail.com>
+#   Created       : <09/11/2025>
+#   Change Log    : Initial version
+#
+# .EXAMPLE
+#   ./arch_backup
+# =========================================
+
 # Install yay (AUR)
 git clone https://aur.archlinux.org/yay-git.git && cd yay && makepkg -si && cd .. && rm -r yay
 
@@ -62,19 +89,11 @@ sudo pacman -S libreoffice-still
 # Install Uncomplicated Firewall
 sudo pacman -S ufw && sudo systemctl enable ufw && sudo systemctl start ufw
 
-# Change bash font (Oh My BASH!) || !OR USE "Oh My Posh!"
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/ohmybash/oh-my-bash/master/tools/install.sh)"
-
 # Install Bash Completion
 sudo pacman -S bash-completion
 
 # Install the next gen ls command 
 sudo pacman -S lsd
-
-# Setup git
-git config --global user.email "zouariomar20@gmail.com"
-git config --global user.username "Zouari Omar"
-git config --global user.name "Zouari Omar"
 
 # Install Docker (!need pass and gnup(gpg))
 sudo pacman -S docker
@@ -111,11 +130,6 @@ sudo pacman -S gdb
 # Install "pkg-config" for .pc files
 sudo pacman -S pkg-config
 
-# Install ollama
-curl -fsSL https://ollama.com/install.sh | sh
-curl https://raw.githubusercontent.com/ollama/ollama/refs/heads/main/docs/linux.md  # Unistall ollama
-curl https://raw.githubusercontent.com/jmont-dev/ollama-hpp/refs/heads/master/singleheader/ollama.hpp # Install ollama.hpp
-
 # Install NVIDIA Drivers (for GPU)
 sudo pacman -S nvidia nvidia-utils nvidia-settings
 
@@ -127,9 +141,6 @@ sudo pacman -S nvtop
 
 # Install less
 sudo pacman -S less
-
-# Basic installation for oracle-xe on archlinux
-firefox https://gist.github.com/davidmaignan/d0d941cbf761678457b865e6de041af0
 
 # Install coreutils (Error: /bin/df: unrecognized option '--direct')
 sudo pacman -S coreutils
@@ -171,34 +182,11 @@ sudo pacman -S lazygit
 # Install fd (fd-find)
 sudo pacman -S fd
 
-# Install dlib (C++ toolkit containing machine learning algorithms)
-git clone https://github.com/davisking/dlib.git
-cd dlib
-mkdir build
-cd build
-cmake ..
-cmake --build .
-sudo cmake --install .
-
 # Install xclip
 sudo pacman -S xclip
 
 # Install nnn
 sudo pacman -S nnn
-
-# Install n³ plugins
-# See https://github.com/jarun/nnn/tree/master/plugins
-# Plugins are installed to `${XDG_CONFIG_HOME:-$HOME/.config}/nnn/plugins`
-sh -c "$(curl -Ls https://raw.githubusercontent.com/jarun/nnn/master/plugins/getplugs)" # The following command installs or updates (after backup) all plugins
-export NNN_PLUG='f:finder;o:fzopen;p:mocq;d:diffs;t:nmount;v:imgview' # Set environment variable NNN_PLUG to assign keybinds and invoke plugins directly using the plugin shortcut (;) followed by the assigned key character
-
-# Install pio-cli and make executable globally (See https://docs.platformio.org/en/latest/core/index.html)
-curl -fsSL -o get-platformio.py https://raw.githubusercontent.com/platformio/platformio-core-installer/master/get-platformio.py
-python3 get-platformio.py
-echo "export PATH=$PATH:$HOME/.local/bin" >> ~/.bashrc
-sudo ln -s ~/.platformio/penv/bin/platformio ~/.local/bin/platformio
-sudo ln -s ~/.platformio/penv/bin/pio ~/.local/bin/pio
-sudo ln -s ~/.platformio/penv/bin/piodebuggdb ~/.local/bin/piodebuggdb
 
 # Install freerdp for remote connections
 sudo pacman -Syu freerdp
@@ -272,12 +260,16 @@ yay -Sy jupyter-nbconvert  # [optional] Convert .ipynb to .html/.md (for bash/nv
 # Install zip
 sudo pacman -Sy zip
 
-# Install sdkman (i use it to install GraalVM)
-curl -s "https://get.sdkman.io" | bash
-
 # Install android sdk
 yay -Sy android-sdk-platform-tools
 yay -Sy android-sdk-cmdline-tools-latest # For `sdkmanager`
 
 # Install Android Studio (i use only for Visual Layout Editor)
 yay -Sy android-studio
+
+# Install papirus icon theme
+sudo pacman -Sy papirus-icon-theme
+
+# Install `impala` ()
+# Enable iwd (sudo systemctl start iwd) 
+sudo pacman -S impala

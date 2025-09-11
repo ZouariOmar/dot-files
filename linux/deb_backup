@@ -1,4 +1,29 @@
-#!/bin/bash
+#!/usr/bin/env bash
+# =========================================
+# .FILE
+#   deb_backup.sh
+#
+# .SYNOPSIS
+#   Linux debien backup script file
+#
+# .DESCRIPTION
+#   It hold linux debien softwares/tips that i used
+#
+# .INPUTS
+#   None
+#
+# .OUTPUTS
+#   None
+#
+# .NOTES
+#   Version       : 1.0
+#   Author        : @ZouariOmar <zouariomar20@gmail.com>
+#   Created       : <09/11/2025>
+#   Change Log    : Initial version
+#
+# .EXAMPLE
+#   ./deb_backup
+# =========================================
 
 #? Install MySQL-C++ connector
 sudo apt-get install libmysqlcppconn-dev
@@ -99,7 +124,7 @@ sudo npm install -g prettier
 #? install the php composer
 sudo apt install composer
 
-#? install nestjs globally 
+#? install nestjs globally
 sudo npm install -g @nestjs/cli
 
 #? install jupyter-notebook
