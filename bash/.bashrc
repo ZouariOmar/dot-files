@@ -1,11 +1,37 @@
-# Set bash header theme
+# ==================================================================================
+# .FILE
+#   .bashrc
+#
+# .SYNOPSIS
+#   Shell initialization script for interactive sessions.
+#
+# .DESCRIPTION
+#   This script is executed whenever a new interactive shell session is started.
+#   It sets up environment variables, command aliases, toolchains (e.g., SDKMAN),
+#   and customizations to improve the user shell experience.
+#
+# .PARAMETER N/A
+#   This file does not accept parameters; it's sourced automatically by the shell.
+#
+# .INPUTS
+#   None
+#
+# .OUTPUTS
+#   Environment settings, shell behavior configurations, and aliases.
+#
+# .NOTES
+#   Version       : 1.0
+#   Author        : @ZouariOmar <zouariomar20@gmail.com>
+#   Created       : 2025-09-12
+#   Change Log    : Initial version
+#
+# .EXAMPLE
+#   N/A — this file is sourced automatically by the shell.
+# ==================================================================================
+
+#Set bash header theme
 POSH_THEME="blue-owl"
 eval "$(oh-my-posh init bash --config /home/zouari_omar/.local/share/themes/$POSH_THEME.omp.json)"
-
-# Load custom colors
-if [ -f ~/.bash_colors ]; then
-  source ~/.bash_colors
-fi
 
 # Ignore duplicate commands in the history
 HISTCONTROL=ignoredups
@@ -13,7 +39,7 @@ HISTCONTROL=ignoredups
 # Custom Alias for neofetch
 alias neof='neofetch --config /home/zouari_omar/.config/neofetch/acenoster.conf'
 
-# Custom Aliases for Navigation
+# Navigation Aliases
 alias ls="lsd"           # Use 'lsd' for a modern and colorful 'ls' alternative
 alias la="ls -a"         # List all files including hidden ones
 alias lla="ls -la"       # List all files including hidden ones with detailed information
@@ -58,6 +84,7 @@ alias top="htop"                                                  # Use htop for
 alias hostname="cat /etc/hostname"                                # Show the hostname
 alias wordlists='ll /usr/share/wordlists'                         # Show your wordlists sets
 alias clear_cache="sudo sh -c 'echo 3 > /proc/sys/vm/drop_caches" # Drops all pagecache, dentries, and inodes from the RAM
+alias keepass='keepassxc-cli'                                     # Shortcut for `keepassxc-cli`
 
 # Network Aliases
 alias prvip="ip a | grep inet | grep -v inet6 | awk '{print $2}' | cut -d/ -f1" # Get Private IP Address
@@ -70,15 +97,13 @@ alias dimages="docker images"  # List Docker images
 alias dbuild="docker build -t" # Build a Docker image
 alias dstop="docker stop"      # Stop a running container
 
-# Vim/Nvim Aliases
+# Editor(s) Aliases
 alias v='vim'
 alias nv='nvim'
 
-# C/C++ Aliases
+# C, C++ & Python Aliases
 alias g++='g++ -std=c++23 -Wall -Wextra -Wpedantic -O2'
 alias gcc='gcc -std=c17 -Wall -Wextra -Wpedantic -O2'
-
-# Python Aliases
 alias jlab='jupyter-lab'
 
 # Show latest `$1` Arch Linux news before upgrading
@@ -114,12 +139,6 @@ n() {
   fi
 }
 
-# Check if the bash-completion script exists at /usr/share/bash-completion/bash_completion.
-# If it does, source the script to enable bash completion features.
-if [ -f /usr/share/bash-completion/bash_completion ]; then
-  . /usr/share/bash-completion/bash_completion
-fi
-
 # Set PIO
 export PLATFORMIO_HOME="$HOME/.local/bin"
 export PATH=$PATH:$PLATFORMIO_HOME
@@ -144,8 +163,18 @@ export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
 # Set EDITOR
 export EDITOR="nv"
 
-# THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
+# Set Symfony
+export SYMFONY_HOME="$HOME/.symfony5"
+export PATH="$SYMFONY_HOME/bin:$PATH"
+
+# Set SDKMAN (for JVM toolchains)
 export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
+# Load custom colors
+[[ -s ~/.bash_colors ]] && source "$HOME/.bash_colors"
 
+# Enable bash completion features
+[[ -s /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion
+
+# Init sdkman
+[[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"

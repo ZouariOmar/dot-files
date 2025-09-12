@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Author: @ZouariOmar
 
 # Targed bash files
-files=(".bash_profile" ".bashrc" "bash_colors")
+files=(".bash_profile" ".bashrc" "bash_colors" ".bash_logout")
 
 # Conserve the current local usr pkg
 for i in "${!files[@]}"; do
