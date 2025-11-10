@@ -273,3 +273,48 @@ sudo pacman -Sy papirus-icon-theme
 # Install `impala` ()
 # Enable iwd (sudo systemctl start iwd) 
 sudo pacman -S impala
+
+# Install Bitchat
+yay -S bitchat-tui
+
+# Install Gaphor (for uml)
+sudo pacman -S gaphor
+
+# Install drawio (for uml and more..)
+sudo pacman -Sy drawio-desktop
+
+# Install powershell (pwsh)
+yay -Sy powershell-bin
+
+# Install wine
+sudo pacman -Sy wine
+
+# Install Assembly
+sudo pacman -Sy nasm
+
+# Install shim
+sudo pacman -Sy shim
+
+# Install efibootmgr (for UEFI systems)
+sudo pacman -Sy efibootmgr
+
+# Install grup (for BIOS systems)
+sudo pacman -Sy grup
+
+# Install GNS3 Prerequesits + docker
+yay -S qemu docker vpcs dynamips libvirt ubridge inetutils
+
+# Install GNS3 Server and GUI 
+yay -S gns3-server gns3-gui
+
+# Install NFS Server
+sudo pacman -Sy nfs-utils
+
+# Install Vmware (workstation && player)
+yay -Sy  vmware-keymaps vmware-workstation
+
+# Install Linux headers
+sudo pacman -Sy linux-headers
+
+# Install Gnome Boxes (VM)
+sudo pacman -S gnome-boxes

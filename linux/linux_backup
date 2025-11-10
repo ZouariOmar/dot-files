@@ -71,3 +71,9 @@ curl -s "https://get.sdkman.io" | bash
 wget https://get.symfony.com/cli/installer -O - | bash
 # Or using curl
 curl -sS https://get.symfony.com/cli/installer | bash
+
+# Install live server
+npm install -g live-server
+
+# Install browder sync (support proxy server)
+npm install -g browser-sync
