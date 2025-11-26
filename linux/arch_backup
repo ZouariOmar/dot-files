@@ -56,6 +56,9 @@ sudo pacman -S ccache
 # Install nodejs and npm
 sudo pacman -Syu nodejs npm
 
+# Install NVM
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
 # Install yarn
 sudo pacman -Sy yarn
 
@@ -136,7 +139,7 @@ sudo pacman -S nvidia nvidia-utils nvidia-settings
 # Install Cuda (for GPU)
 sudo pacman -S cuda
 
-# Install nvtop (real-time GPU usage graph)
+# Install nvtop (real-time GPU usage f)
 sudo pacman -S nvtop
 
 # Install less
@@ -280,6 +283,8 @@ yay -S bitchat-tui
 # Install Gaphor (for uml)
 sudo pacman -S gaphor
 
+# Install Plantuml
+sudo pacman -Sy plantuml
 # Install drawio (for uml and more..)
 sudo pacman -Sy drawio-desktop
 
@@ -305,7 +310,8 @@ sudo pacman -Sy grup
 yay -S qemu docker vpcs dynamips libvirt ubridge inetutils
 
 # Install GNS3 Server and GUI 
-yay -S gns3-server gns3-gui
+yay -Sy gns3-server gns3-gui
+yay -Sy gns3-server-git gns3-gui-git # More stable
 
 # Install NFS Server
 sudo pacman -Sy nfs-utils
@@ -318,3 +324,21 @@ sudo pacman -Sy linux-headers
 
 # Install Gnome Boxes (VM)
 sudo pacman -S gnome-boxes
+
+# Install Packet-Tracer
+yay -Sy packettracer
+
+# Install VirtualBox
+sudo pacman -Sy virtualbox-host-modules-arch
+
+# Install tigervnc
+sudo pacman -Sy tigervnc
+
+# Install Angular-cli
+npm install -g @angular/cli
+
+# Install ZeroTier
+# cli     ==> zerotier-cli
+# seerver ==> zerotier
+# service ==> zerotier-one
+yay -Sy zerotier-one
