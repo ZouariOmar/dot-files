@@ -1,0 +1,348 @@
+#!/usr/bin/env bash
+# =========================================
+# .FILE
+#   arch_backup.sh
+#
+# .SYNOPSIS
+#   Arch linux backup script file
+#
+# .DESCRIPTION
+#   It hold arch linux softwares/tips that i used
+#
+# .INPUTS
+#   None
+#
+# .OUTPUTS
+#   None
+#
+# .NOTES
+#   Version       : 1.0
+#   Author        : @ZouariOmar <zouariomar20@gmail.com>
+#   Created       : <09/11/2025>
+#   Change Log    : Initial version
+#
+# .EXAMPLE
+#   ./arch_backup
+# =========================================
+
+# Install yay (AUR)
+git clone https://aur.archlinux.org/yay-git.git && cd yay && makepkg -si && cd .. && rm -r yay
+
+# Install vscode
+sudo pacman -S visual-studio-code-bin
+
+# Install keepassXC
+sudo pacman -S keepassxc
+
+# Install obsidian
+sudo pacman -S obsidian
+
+# Install MariaDB
+sudo pacman -S mariadb
+sudo mysql_secure_installation # run the secure installation script to set up a root password and secure the installation
+
+# Install Subversion (SVN)
+sudo pacman -S subversion
+
+# Install Apache (httpd)
+sudo pacman -S apache
+
+# Install cmake
+sudo pacman -S cmake
+
+# Install ccache (compiler cache)
+sudo pacman -S ccache
+
+# Install nodejs and npm
+sudo pacman -Syu nodejs npm
+
+# Install NVM
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+# Install yarn
+sudo pacman -Sy yarn
+
+# Install Qt6 base development pkgs
+sudo pacman -S qtcreator-devel(qtcreator) qt6-base qt6-3d qt6-multimedia qt6-network qt6-tools qt6-svg qt6-wayland
+
+# Install doxygen
+sudo pacman -S doxygen
+
+# Install postman
+sudo yay -S postman-bin
+
+# Instaall php
+sudo pacman -S php php-fpm php-mysql phpmyadmin
+
+# Install OBS
+sudo pacman -S obs-studio
+
+# Install unzip
+sudo pacman -S unzip
+
+# Install neofetch
+sudo pacman -S neofetch
+
+# Install java
+sudo pacman -S jdk-openjdk
+
+# Install libreoffice (still/fresh)
+sudo pacman -S libreoffice-still
+
+# Install Uncomplicated Firewall
+sudo pacman -S ufw && sudo systemctl enable ufw && sudo systemctl start ufw
+
+# Install Bash Completion
+sudo pacman -S bash-completion
+
+# Install the next gen ls command 
+sudo pacman -S lsd
+
+# Install Docker (!need pass and gnup(gpg))
+sudo pacman -S docker
+
+# Install oracle sql
+yay -S oracle-instantclient-basic oracle-instantclient-sqlplus
+
+# Install the docker-credential-pass helper
+sudo pacman -S docker-credential-pass || yay -S docker-credential-pass
+
+# Install the pass package (password manager: !need gnupg)
+sudo pacman -S pass
+
+# Tool for encrypting files
+sudo pacman -S gnupg
+
+# Install SFML (Simple and Fast Multimedia Library - for C++)
+sudo pacman -S sfml
+
+# Install build-essential equivalent in Arch Linux, base-devel, and pkg-config
+sudo pacman -S base-devel pkg-config
+
+# Install openCV lib (for C++)
+sudo pacman -S opencv opencv-samples
+pkg-config --modversion opencv4                     # Check the version of OpenCV to see if its correcly installed
+firefox https://github.com/donaldssh/Install-OpenCV # For more details
+
+# Install hdf5 and vtk (for opencv)
+sudo pacman -S hdf5 vtk
+
+# Install gdb (debuging tool)
+sudo pacman -S gdb
+
+# Install "pkg-config" for .pc files
+sudo pacman -S pkg-config
+
+# Install NVIDIA Drivers (for GPU)
+sudo pacman -S nvidia nvidia-utils nvidia-settings
+
+# Install Cuda (for GPU)
+sudo pacman -S cuda
+
+# Install nvtop (real-time GPU usage f)
+sudo pacman -S nvtop
+
+# Install less
+sudo pacman -S less
+
+# Install coreutils (Error: /bin/df: unrecognized option '--direct')
+sudo pacman -S coreutils
+
+# Install net-tools
+sudo pacman -S net-tools
+
+# Install rpmextract
+sudo pacman -S rpmextract
+
+# Install Maven (for Java)
+sudo pacman -S maven
+
+# Install OpenShot
+sudo pacman -S openshot
+
+# Install graphviz (for doxygen)
+sudo pacman -S graphviz
+
+# Install texlive (for latex documantion, doxygen-latex) 
+sudo pacman -S texlive
+
+# Install valgrind (debuging tool)
+sudo pacman -S valgrind
+
+# Install tor (CLI/GUI)
+sudo pacman -S torbrowser-launcher tor torsocks
+
+# Install neovim (IDE)
+# See also https://www.lazyvim.org/installation
+sudo pacman -S neovim
+
+# Install nvm (Node Version Manager)
+sudo pacman -S nvm
+
+# Install lazygit
+sudo pacman -S lazygit
+
+# Install fd (fd-find)
+sudo pacman -S fd
+
+# Install xclip
+sudo pacman -S xclip
+
+# Install nnn
+sudo pacman -S nnn
+
+# Install freerdp for remote connections
+sudo pacman -Syu freerdp
+
+# Install GLAD and GLFW for openGL
+# See https://glad.dav1d.de for GLAD
+sudo pacman -Sy glad glfw
+
+# Install nlohmann-json for .json parsing
+sudo pacman -Sy nlohmann-json
+
+# Install gradle
+sudo pacamn -Sy gradle
+
+# Install dirb
+yay -Sy dirb
+
+# Install postgresql
+sudo pacman -Sy postgresql
+sudo -iu postgres initdb -D /var/lib/postgres/data # Run it if this is a fresh install
+
+# Install Oodo (see https://www.odoo.com/documentation/17.0/fr/administration/on_premise/source.html)
+# Install `odoo-venv` or `odoo18-nightly` (Quick oodo setup)
+yay -Sy odoo
+
+# Install wheel-building helpers (required)
+sudo pacman -S python-wheel python-setuptools # python-pip (optional)
+
+# Install pyenv (manage many python version)
+sudo pacman -Sy pyenv
+
+# Install 'pacman-contrib' (Automatically remove unused pkg's)
+sudo pacman -S pacman-contrib # Usage: paccache -r
+
+# Install nmap
+sudo pacman -Sy nmap
+
+# Install lftp
+sudo pacman -Sy lftp
+
+# Install openvpn
+sudo pacman -Sy openvpn
+
+# Install AnyDesk
+yay -Sy anydesk-bin
+
+# Install arm-none-eabi-gcc  compiler (for STM32 dev)
+sudo pacman -S arm-none-eabi-gcc    # Compiler
+sudo pacman -S arm-none-eabi-newlib # Headers
+
+# Install Hydra (Pen Test Tool)
+sudo pacman -Sy hydra
+
+# Install wordlists (Download a great set of wordlists. In /usr/share/wordlists)
+yay -Sy wordlists
+
+# Install RPM tools
+sudo pacman -Sy rpm-tools
+
+# Install Deb Dpkg
+sudo pacman -Sy dpkg
+
+# Install tesseract-ocr
+sudo pacman -Sy tesseract
+
+# Install jupyter
+sudo pacman -Sy jupyterlab # [Recommended]
+yay -Sy python-jupytext    # [optional] Convert .py to .ipynb       (for bash/nvim)
+yay -Sy jupyter-nbconvert  # [optional] Convert .ipynb to .html/.md (for bash/nvim)
+
+# Install zip
+sudo pacman -Sy zip
+
+# Install android sdk
+yay -Sy android-sdk-platform-tools
+yay -Sy android-sdk-cmdline-tools-latest # For `sdkmanager`
+
+# Install Android Studio (i use only for Visual Layout Editor)
+yay -Sy android-studio
+
+# Install papirus icon theme
+sudo pacman -Sy papirus-icon-theme
+
+# Install `impala` ()
+# Enable iwd (sudo systemctl start iwd) 
+sudo pacman -S impala
+
+# Install Bitchat
+yay -S bitchat-tui
+
+# Install Gaphor (for uml)
+sudo pacman -S gaphor
+
+# Install Plantuml
+sudo pacman -Sy plantuml
+# Install drawio (for uml and more..)
+sudo pacman -Sy drawio-desktop
+
+# Install powershell (pwsh)
+yay -Sy powershell-bin
+
+# Install wine
+sudo pacman -Sy wine
+
+# Install Assembly
+sudo pacman -Sy nasm
+
+# Install shim
+sudo pacman -Sy shim
+
+# Install efibootmgr (for UEFI systems)
+sudo pacman -Sy efibootmgr
+
+# Install grup (for BIOS systems)
+sudo pacman -Sy grup
+
+# Install GNS3 Prerequesits + docker
+yay -S qemu docker vpcs dynamips libvirt ubridge inetutils
+
+# Install GNS3 Server and GUI 
+yay -Sy gns3-server gns3-gui
+yay -Sy gns3-server-git gns3-gui-git # More stable
+
+# Install NFS Server
+sudo pacman -Sy nfs-utils
+
+# Install Vmware (workstation && player)
+yay -Sy  vmware-keymaps vmware-workstation
+
+# Install Linux headers
+sudo pacman -Sy linux-headers
+
+# Install Gnome Boxes (VM)
+sudo pacman -S gnome-boxes
+
+# Install Packet-Tracer
+yay -Sy packettracer
+
+# Install VirtualBox
+sudo pacman -Sy virtualbox-host-modules-arch
+
+# Install tigervnc
+sudo pacman -Sy tigervnc
+
+# Install Angular-cli
+npm install -g @angular/cli
+
+# Install ZeroTier
+# cli     ==> zerotier-cli
+# seerver ==> zerotier
+# service ==> zerotier-one
+yay -Sy zerotier-one
+
+# Install python-pyqt5-5.15.11-2
+sudo pacman -U https://archive.archlinux.org/packages/p/python-pyqt5/python-pyqt5-5.15.11-2-x86_64.pkg.tar.zst
+

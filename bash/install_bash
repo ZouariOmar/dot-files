@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # Author: @ZouariOmar
 
-# Targed bash files
-files=(".bash_profile" ".bashrc" "bash_colors" ".bash_logout")
+# Targed bash files/dirs
+files=(".bash_profile" ".bashrc" ".bash" ".bash_logout")
 
-# Conserve the current local usr pkg
+# Conserve the current bash files
 for i in "${!files[@]}"; do
   src="${HOME}/${files[$i]}"
   dest="${src}.old"

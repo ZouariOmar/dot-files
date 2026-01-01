@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# Author: @ZouariOmar
+
+# Conserve the current local usr files
+if mv /usr/local/bin/* /usr/local/bin.old -iv; then
+  echo -e "\033[32m[SUCCESS]\033[0m Moved /usr/local/bin/* to /usr/local/bin.old!"
+else
+  echo -e "\033[31m[ERROR]\033[0m Can't Move /usr/local/bin/* to /usr/local/bin.old!"
+  exit 1
+fi
+
+# Install the usr backup
+if mv usr-local-bin/* /usr/local/bin -iv; then
+  echo -e "\033[32m[SUCCESS]\033[0m Moved usr-local-bin/* to /usr/local/bin!"
+else
+  echo -e "\033[31m[ERROR]\033[0m Can't Move usr-local-bin/* to /usr/local/bin!"
+  exit 1
+fi
