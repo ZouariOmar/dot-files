@@ -1,10 +1,10 @@
 <!-- @format -->
 
-# Security Policy for DotFiles
+# Security Policy for dot-files
 
 ## Supported Versions
 
-The DotFiles project provides security updates for the following versions:
+The dot-files project provides security updates for the following versions:
 
 | Version | Supported          |
 | ------- | ------------------ |
@@ -13,21 +13,21 @@ The DotFiles project provides security updates for the following versions:
 
 ## Reporting a Vulnerability
 
-If you discover a security vulnerability in DotFiles, we encourage responsible disclosure. To report a vulnerability:
+If you discover a security vulnerability in dot-files, we encourage responsible disclosure. To report a vulnerability:
 
 1. **Contact us** via email at [zouariomar20@gmail.com](mailto:zouariomar20@gmail.com) with the details.
 2. Please provide a detailed description of the issue, including steps to reproduce it and, if available, a proof of concept.
 3. We aim to respond within **48 hours** and will work closely with you to resolve the issue.
 
-We appreciate the security community's efforts in helping us maintain DotFiles’s safety and integrity.
+We appreciate the security community's efforts in helping us maintain dot-files’s safety and integrity.
 
 ## Security Practices
 
-DotFiles follows industry best practices for security to ensure safe transactions and protect user data:
+dot-files follows industry best practices for security to ensure safe transactions and protect user data:
 
 ### 1. **Authentication and Authorization**
 
-- DotFiles uses secure methods for user authentication, including strong password hashing (e.g., bcrypt).
+- dot-files uses secure methods for user authentication, including strong password hashing (e.g., bcrypt).
 - Access control is implemented to restrict unauthorized actions.
 
 ### 2. **Data Encryption**
@@ -66,7 +66,7 @@ DotFiles follows industry best practices for security to ensure safe transaction
 
 ## Security Contributions
 
-Contributors can help enhance DotFiles's security by following these practices:
+Contributors can help enhance dot-files's security by following these practices:
 
 - Adhere to secure coding standards and the above security practices when contributing.
 - Conduct thorough security testing before submitting a pull request.
@@ -79,4 +79,4 @@ For additional guidance on secure development, refer to:
 - [OWASP Secure Coding Practices Checklist](https://cheatsheetseries.owasp.org/cheatsheets/Secure_Coding_Practices_Checklist.html)
 - [CWE Top 25 Most Dangerous Software Errors](https://cwe.mitre.org/top25/)
 
-Thank you for helping us make DotFiles secure for our users and the community!
+Thank you for helping us make dot-files secure for our users and the community!
