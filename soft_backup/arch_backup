@@ -307,7 +307,7 @@ sudo pacman -Sy efibootmgr
 sudo pacman -Sy grup
 
 # Install GNS3 Prerequesits + docker
-yay -S qemu docker vpcs dynamips libvirt ubridge inetutils
+yay -S qemu docker vpcs dynamips libvirt dnsmasq ubridge bridge-utils inetutils
 
 # Install GNS3 Server and GUI 
 yay -Sy gns3-server gns3-gui
@@ -345,4 +345,7 @@ yay -Sy zerotier-one
 
 # Install python-pyqt5-5.15.11-2
 sudo pacman -U https://archive.archlinux.org/packages/p/python-pyqt5/python-pyqt5-5.15.11-2-x86_64.pkg.tar.zst
+
+# Install Intel Media Driver
+sudo pacman -Sy intel-media-driver
 

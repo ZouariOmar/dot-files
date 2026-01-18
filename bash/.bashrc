@@ -23,7 +23,7 @@
 #   Version       : 1.1
 #   Author        : @ZouariOmar <zouariomar20@gmail.com>
 #   Created       : 2025-09-12
-#   Change Log    : d911998
+#   Change Log    : 350d343
 #
 # .EXAMPLE
 #   N/A — this file is sourced automatically by the shell.
@@ -38,6 +38,10 @@ HISTCONTROL=ignoredups
 
 # Custom Alias for neofetch
 alias neof='neofetch --config /home/zouari_omar/.config/neofetch/acenoster.conf'
+
+# Global variables
+EXIT_SUCCESS=0
+EXIT_FAILURE=1
 
 # Navigation Aliases
 alias ls="lsd"           # Use 'lsd' for a modern and colorful 'ls' alternative
@@ -75,6 +79,7 @@ alias hostname="cat /etc/hostname"                       # Show the hostname
 alias wordlists='ll /usr/share/wordlists'                # Show your wordlists sets
 alias cc="sudo sh -c 'echo 3 > /proc/sys/vm/drop_caches" # Drops all pagecache, dentries, and inodes from the RAM
 alias kp='keepassxc-cli'                                 # Shortcut for `keepassxc-cli`
+alias "xc=xclip -selection clipboard"                    # Copy the content into the clipboard (ensures it goes to the standard Ctrl+C/Ctrl+V clipboard)
 
 # Arch Aliases
 alias pacu="sudo pacman -Syu"                  # Updating package database and upgrading system
@@ -114,7 +119,7 @@ alias jlab='jupyter-lab'
 pacnews() {
   if [ "$#" -ne 1 ]; then
     echo "Usage: pacnews <latest_news_number>"
-    return 1
+    return ${EXIT_FAILURE}
   fi
 
   echo "🔔 Latest Arch Linux news:"
@@ -144,10 +149,23 @@ n() {
 }
 
 # Load VirtualBox modules
-load_vb() {
-  sudo modprobe vboxdrv
-  sudo modprobe vboxnetflt
-  sudo modprobe vboxnetadp
+# load_vb() {
+#   sudo modprobe vboxdrv
+#   sudo modprobe vboxnetflt
+#   sudo modprobe vboxnetadp
+# }
+
+# Get keepassxc-cli entry-password on the clipboard
+kpg() {
+  if [[ $# -ne 2 ]]; then
+    echo -e "${YELLOW}[Usage]${RESET} kpg <attribute> <entry>"
+    return ${EXIT_FAILURE}
+  fi
+  KDBX_PATH="path_to_your_db.kdbx"
+  entry=$2
+  attribute=$1
+  (keepassxc-cli show -sa "${attribute}" "${KDBX_PATH}" "${entry}" | xclip -selection clipboard) &&
+    echo -e "${GREEN}Copied To Clipboard!${RESET}"
 }
 
 # Set Bash
