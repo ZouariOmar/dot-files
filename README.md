@@ -5,7 +5,7 @@
 [![Stargazers](https://img.shields.io/badge/STARS-01-blue?style=plastic)](https://github.com/ZouariOmar/dot-files/stargazers)
 [![Issues](https://img.shields.io/badge/ISSUES-00-blue?style=plastic)](https://github.com/ZouariOmar/dot-files/issues)
 [![GPL License](https://img.shields.io/badge/LICENSE-GPL3.0-blue?style=plastic)](LICENSE)
-[![Linkedin](https://img.shields.io/badge/Linkedin-6.4k-blue?style=plastic)](https://www.linkedin.com/in/zouari-omar-143239283)
+[![Linkedin](https://img.shields.io/badge/Linkedin-6.7k-blue?style=plastic)](https://www.linkedin.com/in/zouari-omar)
 
 <h1 align="center">
   <br>
@@ -77,4 +77,4 @@ For questions or suggestions, feel free to reach out:
 
 - **GitHub**: [ZouariOmar](https://github.com/ZouariOmar)
 - **Email**: [zouariomar20@gmail.com](mailto:zouariomar20@gmail.com)
-- **LinkedIn**: [Zouari Omar](https://www.linkedin.com/in/zouari-omar-143239283/)
+- **LinkedIn**: [Zouari Omar](https://www.linkedin.com/in/zouari-omar)

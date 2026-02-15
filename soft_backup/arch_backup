@@ -254,6 +254,7 @@ sudo pacman -Sy dpkg
 
 # Install tesseract-ocr
 sudo pacman -Sy tesseract
+sudo pacman -Sy tesseract-data-eng # For english data 
 
 # Install jupyter
 sudo pacman -Sy jupyterlab # [Recommended]
@@ -285,6 +286,7 @@ sudo pacman -S gaphor
 
 # Install Plantuml
 sudo pacman -Sy plantuml
+
 # Install drawio (for uml and more..)
 sudo pacman -Sy drawio-desktop
 
@@ -349,3 +351,5 @@ sudo pacman -U https://archive.archlinux.org/packages/p/python-pyqt5/python-pyqt
 # Install Intel Media Driver
 sudo pacman -Sy intel-media-driver
 
+# Install wifite
+sudo pacman -Sy wifite

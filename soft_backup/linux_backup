@@ -77,3 +77,6 @@ npm install -g live-server
 
 # Install browder sync (support proxy server)
 npm install -g browser-sync
+
+# Install copilot-cli
+curl -fsSL https://gh.io/copilot-install | bash
