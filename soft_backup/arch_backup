@@ -333,9 +333,6 @@ yay -Sy packettracer
 # Install VirtualBox
 sudo pacman -Sy virtualbox-host-modules-arch
 
-# Install tigervnc
-sudo pacman -Sy tigervnc
-
 # Install Angular-cli
 npm install -g @angular/cli
 
@@ -343,7 +340,7 @@ npm install -g @angular/cli
 # cli     ==> zerotier-cli
 # seerver ==> zerotier
 # service ==> zerotier-one
-yay -Sy zerotier-one
+yay -S zerotier-one
 
 # Install python-pyqt5-5.15.11-2
 sudo pacman -U https://archive.archlinux.org/packages/p/python-pyqt5/python-pyqt5-5.15.11-2-x86_64.pkg.tar.zst
@@ -352,4 +349,16 @@ sudo pacman -U https://archive.archlinux.org/packages/p/python-pyqt5/python-pyqt
 sudo pacman -Sy intel-media-driver
 
 # Install wifite
-sudo pacman -Sy wifite
+sudo pacman -S wifite
+
+# Install pandoc (document convert)
+sudo pacman -S --noconfirm pandoc
+
+# Install weasyprint & wkhtmltopdf (conversion engines)
+sudo pacman -S --noconfirm weasyprint wkhtmltopdf
+
+# Install Okular (document reader)
+sudo pacman -S --noconfirm okular
+
+# Install Flex (Fast Lexical Analyzer Generator)
+sudo pacman -S --noconfirm flex

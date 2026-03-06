@@ -80,3 +80,6 @@ npm install -g browser-sync
 
 # Install copilot-cli
 curl -fsSL https://gh.io/copilot-install | bash
+
+# Install tigervnc
+sudo pacman -Sy tigervnc
