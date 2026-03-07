@@ -5,11 +5,11 @@
 [![Stargazers](https://img.shields.io/badge/STARS-01-blue?style=plastic)](https://github.com/ZouariOmar/dot-files/stargazers)
 [![Issues](https://img.shields.io/badge/ISSUES-00-blue?style=plastic)](https://github.com/ZouariOmar/dot-files/issues)
 [![GPL License](https://img.shields.io/badge/LICENSE-GPL3.0-blue?style=plastic)](LICENSE)
-[![Linkedin](https://img.shields.io/badge/Linkedin-6.7k-blue?style=plastic)](https://www.linkedin.com/in/zouari-omar)
+[![Linkedin](https://img.shields.io/badge/Linkedin-6.9k-blue?style=plastic)](https://www.linkedin.com/in/zouari-omar)
 
 <h1 align="center">
   <br>
-  <a href="https://github.com/ZouariOmar/DotFiles"><img src="assets/logo.png" alt="DotFiles" width="200"></a>
+  <a href="https://github.com/ZouariOmar/DotFiles"><img src="res/logo.png" alt="DotFiles" width="200"></a>
   <br>
   DotFiles
   <br>
@@ -60,7 +60,7 @@ $ git clone https://github.com/ZouariOmar/dot-files
 $ cd dot-files
 
 # Install dot-files
-$ chmod u+x install_all && ./install_all
+$ chmod u+x install_dot_files && ./install_dot_files
 ```
 
 ## Emailware

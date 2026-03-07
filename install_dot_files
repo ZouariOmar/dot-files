@@ -1,0 +1,497 @@
+#!/usr/bin/env bash
+# =========================================
+# .FILE
+#   install_dot_files
+#
+# .SYNOPSIS
+#   Install and configure dotfiles on a new system.
+#
+# .DESCRIPTION
+#   This script sets up a complete development environment by creating
+#   symlinks for all dotfiles included in this repository (shell, editor,
+#   git, tools, etc.). Supports per-component flags, and both local and
+#   remote (GitHub clone) installation modes.
+#
+# .PARAMETER
+#   See --help for all available flags.
+#
+# .INPUTS
+#   None
+#
+# .OUTPUTS
+#   Console output with color-coded status messages.
+#
+# .NOTES
+#   Version       : 1.A
+#   Author        : @ZouariOmar <zouariomar20@gmail.com>
+#   Created       : 2026-01-01
+#   Change Log    : Added flags, per-component functions, remote/local modes
+#
+# .EXAMPLE
+#   ./install_dot_files --all
+#   ./install_dot_files --git --nvim
+#   ./install_dot_files --remote --all
+# =========================================
+
+set -euo pipefail
+
+# =========================================
+# Constants & Colors
+# =========================================
+
+readonly EXIT_SUCCESS=0
+readonly EXIT_FAILURE=1
+readonly REPO_URL="https://github.com/ZouariOmar/dot-files"
+readonly SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# Source color definitions; fallback to inline ANSI codes if unavailable
+_COLORS_FILE="$HOME/.bash/.bash_colors"
+if [[ -f "$_COLORS_FILE" ]]; then
+  # shellcheck source=/home/zouari_omar/.bash/.bash_colors
+  source "$_COLORS_FILE"
+else
+  RESET='\e[0m'
+  BOLD='\e[1m'
+  RED='\e[31m'
+  GREEN='\e[32m'
+  YELLOW='\e[33m'
+  BLUE='\e[34m'
+  CYAN='\e[36m'
+  BOLD_GREEN='\e[1;32m'
+  BOLD_CYAN='\e[1;36m'
+  BOLD_YELLOW='\e[1;33m'
+  BOLD_RED='\e[1;31m'
+  BOLD_BLUE='\e[1;34m'
+fi
+
+# Resolved at runtime (may be overridden by --remote)
+DOT_FILES_DIR="$SCRIPT_DIR/dot-files"
+
+# =========================================
+# Logging helpers
+# =========================================
+
+log_info() { echo -e "${BOLD_CYAN}[INFO]${RESET}  $*"; }
+log_ok() { echo -e "${BOLD_GREEN}[ OK ]${RESET}  $*"; }
+log_warn() { echo -e "${BOLD_YELLOW}[WARN]${RESET}  $*"; }
+log_error() { echo -e "${BOLD_RED}[ERR ]${RESET}  $*" >&2; }
+log_section() { echo -e "\n${BOLD}${BOLD_BLUE}══════════ $* ══════════${RESET}"; }
+
+# =========================================
+# Utility
+# =========================================
+
+# -----------------------------------------
+# .FUNCTION
+#   symlink
+# .SYNOPSIS
+#   Create a symlink, backing up any existing file.
+# .DESCRIPTION
+#   Creates parent directories as needed, moves any existing
+#   file/link to <dst>.bak, then creates the symlink src -> dst.
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-01-01
+# -----------------------------------------
+symlink() {
+  local src="$1" dst="$2"
+  local dst_dir
+  dst_dir="$(dirname "$dst")"
+  [[ -d "$dst_dir" ]] || mkdir -p "$dst_dir"
+  if [[ -e "$dst" || -L "$dst" ]]; then
+    log_warn "Backup: $dst → $dst.bak"
+    mv "$dst" "$dst.bak"
+  fi
+  ln -sf "$src" "$dst"
+  log_ok "Linked  $dst ${CYAN}→${RESET} $src"
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   require_cmd
+# .SYNOPSIS
+#   Exit with an error if a command is not found.
+# -----------------------------------------
+require_cmd() {
+  command -v "$1" &>/dev/null || {
+    log_error "Required command not found: $1"
+    exit $EXIT_FAILURE
+  }
+}
+
+# =========================================
+# Per-component install functions
+# =========================================
+
+# -----------------------------------------
+# .FUNCTION
+#   install_bash
+# .SYNOPSIS
+#   Install Bash dotfiles.
+# .DESCRIPTION
+#   Symlinks .bashrc, .bash_profile, .bash_logout, .bash_history,
+#   and the .bash/ directory (containing .bash_colors) into $HOME.
+# -----------------------------------------
+install_bash() {
+  log_section "Bash"
+  local src="$DOT_FILES_DIR/bash"
+  symlink "$src/.bashrc" "$HOME/.bashrc"
+  symlink "$src/.bash_profile" "$HOME/.bash_profile"
+  symlink "$src/.bash_logout" "$HOME/.bash_logout"
+  symlink "$src/.bash_history" "$HOME/.bash_history"
+  symlink "$src/.bash/.bash_colors" "$HOME/.bash/.bash_colors"
+  log_ok "Bash dotfiles installed."
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   install_git
+# .SYNOPSIS
+#   Install Git config.
+# .DESCRIPTION
+#   Symlinks .gitconfig into $HOME.
+#   NOTE: .git-credentials is intentionally skipped (contains secrets).
+# -----------------------------------------
+install_git() {
+  log_section "Git"
+  local src="$DOT_FILES_DIR/git"
+  symlink "$src/.gitconfig" "$HOME/.gitconfig"
+  log_warn ".git-credentials skipped (contains sensitive data — configure manually)."
+  log_ok "Git dotfiles installed."
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   install_nvim
+# .SYNOPSIS
+#   Install Neovim configuration.
+# .DESCRIPTION
+#   Symlinks the entire nvim/ config directory to ~/.config/nvim.
+# -----------------------------------------
+install_nvim() {
+  log_section "Neovim"
+  local src="$DOT_FILES_DIR/nvim/nvim"
+  symlink "$src" "$HOME/.config/nvim"
+  log_ok "Neovim config installed."
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   install_neofetch
+# .SYNOPSIS
+#   Install Neofetch configuration.
+# .DESCRIPTION
+#   Symlinks config.conf and acenoster.conf to ~/.config/neofetch/.
+# -----------------------------------------
+install_neofetch() {
+  log_section "Neofetch"
+  local src="$DOT_FILES_DIR/neofetch"
+  symlink "$src/config.conf" "$HOME/.config/neofetch/config.conf"
+  symlink "$src/acenoster.conf" "$HOME/.config/neofetch/acenoster.conf"
+  log_ok "Neofetch config installed."
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   install_clang
+# .SYNOPSIS
+#   Install Clang/LLVM tooling config.
+# .DESCRIPTION
+#   Symlinks .clangd and .clang-format into $HOME.
+# -----------------------------------------
+install_clang() {
+  log_section "Clang"
+  local src="$DOT_FILES_DIR/clang"
+  symlink "$src/.clangd" "$HOME/.clangd"
+  symlink "$src/.clang-format" "$HOME/.clang-format"
+  log_ok "Clang dotfiles installed."
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   install_vscode
+# .SYNOPSIS
+#   Install VSCode user settings.
+# .DESCRIPTION
+#   Symlinks settings.json to ~/.config/Code/User/settings.json.
+# -----------------------------------------
+install_vscode() {
+  log_section "VSCode"
+  local src="$DOT_FILES_DIR/vscode"
+  symlink "$src/settings.json" "$HOME/.config/Code/User/settings.json"
+  log_ok "VSCode settings installed."
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   install_docker
+# .SYNOPSIS
+#   Install Docker daemon/client config.
+# .DESCRIPTION
+#   Symlinks config.json to ~/.docker/config.json.
+# -----------------------------------------
+install_docker() {
+  log_section "Docker"
+  local src="$DOT_FILES_DIR/docker"
+  symlink "$src/config.json" "$HOME/.docker/config.json"
+  log_ok "Docker config installed."
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   install_nvidia
+# .SYNOPSIS
+#   Install NVIDIA settings.
+# .DESCRIPTION
+#   Symlinks .nvidia-settings-rc into $HOME.
+# -----------------------------------------
+install_nvidia() {
+  log_section "NVIDIA"
+  local src="$DOT_FILES_DIR/nvidia"
+  symlink "$src/.nvidia-settings-rc" "$HOME/.nvidia-settings-rc"
+  log_ok "NVIDIA settings installed."
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   install_obs
+# .SYNOPSIS
+#   Install OBS Studio scene collection.
+# .DESCRIPTION
+#   Copies Youtube.json scene file into ~/.config/obs-studio/basic/scenes/.
+#   OBS rewrites its config files, so copying is preferred over symlinking.
+# -----------------------------------------
+install_obs() {
+  log_section "OBS Studio"
+  local src="$DOT_FILES_DIR/obs"
+  local dst="$HOME/.config/obs-studio/basic/scenes"
+  mkdir -p "$dst"
+  if [[ ! -f "$dst/Youtube.json" ]]; then
+    cp "$src/Youtube.json" "$dst/Youtube.json"
+    log_ok "OBS scene 'Youtube.json' installed."
+  else
+    log_warn "OBS scene already exists, skipping (remove $dst/Youtube.json to reinstall)."
+  fi
+  log_ok "OBS config installed."
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   install_servers
+# .SYNOPSIS
+#   Install Apache2 and Nginx server configs.
+# .DESCRIPTION
+#   Copies config trees into /etc/apache2 and /etc/nginx (requires sudo).
+#   Skips silently if the server is not installed.
+# -----------------------------------------
+install_servers() {
+  log_section "Servers"
+  local src="$DOT_FILES_DIR/servers"
+
+  if [[ -d /etc/apache2 ]]; then
+    log_info "Installing Apache2 config..."
+    sudo cp -r "$src/apache2/." /etc/apache2/ && log_ok "Apache2 config installed."
+  else
+    log_warn "Apache2 not found — skipping."
+  fi
+
+  if [[ -d /etc/nginx ]]; then
+    log_info "Installing Nginx config..."
+    sudo cp -r "$src/nginx/." /etc/nginx/ && log_ok "Nginx config installed."
+  else
+    log_warn "Nginx not found — skipping."
+  fi
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   install_linux
+# .SYNOPSIS
+#   Install custom system binaries to /usr/local/bin.
+# .DESCRIPTION
+#   Copies all executables from dot-files/linux/root/usr/usr-local-bin/
+#   to /usr/local/bin/ and marks them executable (requires sudo).
+# -----------------------------------------
+install_linux() {
+  log_section "Linux (system binaries)"
+  local src="$DOT_FILES_DIR/linux/root/usr/usr-local-bin"
+  local installed=0
+  for bin in "$src"/*; do
+    [[ -f "$bin" ]] || continue
+    local name
+    name="$(basename "$bin")"
+    sudo install -m 0755 "$bin" "/usr/local/bin/$name"
+    log_ok "Installed /usr/local/bin/$name"
+    ((installed++)) || true
+  done
+  [[ $installed -eq 0 ]] && log_warn "No binaries found in $src."
+  log_ok "Linux system binaries installed."
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   install_all
+# .SYNOPSIS
+#   Install every dotfile component.
+# -----------------------------------------
+install_all() {
+  install_bash
+  install_git
+  install_nvim
+  install_neofetch
+  install_clang
+  install_vscode
+  install_docker
+  install_nvidia
+  install_obs
+  install_servers
+  install_linux
+}
+
+# =========================================
+# Remote mode
+# =========================================
+
+# -----------------------------------------
+# .FUNCTION
+#   setup_remote
+# .SYNOPSIS
+#   Clone the dot-files repo and set DOT_FILES_DIR.
+# .DESCRIPTION
+#   Performs a shallow clone of REPO_URL into a temporary directory,
+#   then overrides DOT_FILES_DIR so subsequent installs use that clone.
+# -----------------------------------------
+setup_remote() {
+  log_section "Remote Installation"
+  require_cmd git
+  local tmp_dir
+  tmp_dir="$(mktemp -d)"
+  log_info "Cloning $REPO_URL ..."
+  git clone --depth=1 "$REPO_URL" "$tmp_dir/repo" || {
+    log_error "Failed to clone repository."
+    exit $EXIT_FAILURE
+  }
+  DOT_FILES_DIR="$tmp_dir/repo/dot-files"
+  log_ok "Repository cloned to $tmp_dir/repo"
+}
+
+# =========================================
+# Help
+# =========================================
+
+# -----------------------------------------
+# .FUNCTION
+#   help
+# .SYNOPSIS
+#   Print usage information and exit.
+# -----------------------------------------
+help() {
+  echo -e "${BOLD_CYAN}[FILE]${RESET}
+  install_dot_files
+${BOLD_CYAN}[LINK]${RESET}
+  https://github.com/ZouariOmar/dot-files
+${BOLD_CYAN}[BRIEF]${RESET}
+  Install and configure dotfiles on a new system. Creates symlinks from your
+  home directory into the repository's dot-files/ tree. Supports installing
+  individual components or the full set, from a local clone or directly from
+  GitHub.
+${BOLD_CYAN}[USAGE]${RESET}
+  ./install_dot_files [MODE] [COMPONENT...]
+
+  With no arguments, all components are installed from the local directory.
+${BOLD_CYAN}[MODE]${RESET}
+  ${BOLD}--local${RESET}      Use the local dot-files/ directory (default)
+  ${BOLD}--remote${RESET}     Clone the repo from GitHub first, then install
+${BOLD_CYAN}[COMPONENT FLAGS]${RESET}
+  ${BOLD}--all${RESET}        Install all components (default when no flag given)
+  ${BOLD}--bash${RESET}       Bash dotfiles  (.bashrc, .bash_profile, .bash_colors, ...)
+  ${BOLD}--git${RESET}        Git config     (.gitconfig)
+  ${BOLD}--nvim${RESET}       Neovim config  (~/.config/nvim)
+  ${BOLD}--neofetch${RESET}   Neofetch config (~/.config/neofetch)
+  ${BOLD}--clang${RESET}      Clang tooling  (.clangd, .clang-format)
+  ${BOLD}--vscode${RESET}     VSCode settings (~/.config/Code/User/settings.json)
+  ${BOLD}--docker${RESET}     Docker config  (~/.docker/config.json)
+  ${BOLD}--nvidia${RESET}     NVIDIA settings (.nvidia-settings-rc)
+  ${BOLD}--obs${RESET}        OBS Studio scene collection
+  ${BOLD}--servers${RESET}    Apache2 / Nginx configs — requires ${BOLD}sudo${RESET}
+  ${BOLD}--linux${RESET}      System binaries → /usr/local/bin — requires ${BOLD}sudo${RESET}
+  ${BOLD}--help | -h${RESET}  Show this help message
+${BOLD_CYAN}[EXAMPLES]${RESET}
+  ./install_dot_files                   # install everything (local)
+  ./install_dot_files --all             # same as above
+  ./install_dot_files --git --nvim      # only git + neovim
+  ./install_dot_files --remote --all    # clone from GitHub, then install all
+  ./install_dot_files --remote --bash   # clone from GitHub, then install bash only
+${BOLD_CYAN}[VERSION]${RESET}
+  1.1
+${BOLD_CYAN}[AUTHOR]${RESET}
+  @ZouariOmar <zouariomar20@gmail.com>
+${BOLD_CYAN}[CREATED]${RESET}
+  01/01/2026
+${BOLD_CYAN}[CHANGELOG]${RESET}
+  1.1 — Complete rewrite: flags, per-component functions, remote/local modes
+  1.0 — Initial skeleton"
+  exit $EXIT_SUCCESS
+}
+
+# =========================================
+# Argument parsing & dispatch
+# =========================================
+
+COMPONENTS=()
+DO_REMOTE=false
+
+# No args → install everything locally
+[[ $# -eq 0 ]] && install_all && exit $EXIT_SUCCESS
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+  --help | -h) help ;;
+  --remote) DO_REMOTE=true ;;
+  --local) DO_REMOTE=false ;;
+  --all) COMPONENTS+=(all) ;;
+  --bash) COMPONENTS+=(bash) ;;
+  --git) COMPONENTS+=(git) ;;
+  --nvim) COMPONENTS+=(nvim) ;;
+  --neofetch) COMPONENTS+=(neofetch) ;;
+  --clang) COMPONENTS+=(clang) ;;
+  --vscode) COMPONENTS+=(vscode) ;;
+  --docker) COMPONENTS+=(docker) ;;
+  --nvidia) COMPONENTS+=(nvidia) ;;
+  --obs) COMPONENTS+=(obs) ;;
+  --servers) COMPONENTS+=(servers) ;;
+  --linux) COMPONENTS+=(linux) ;;
+  *)
+    log_error "Unknown option: $1"
+    echo -e "Run ${BOLD}./install_dot_files --help${RESET} for usage."
+    exit $EXIT_FAILURE
+    ;;
+  esac
+  shift
+done
+
+# Setup remote mode (overrides DOT_FILES_DIR) before any install
+$DO_REMOTE && setup_remote
+
+# No component flags given → install all
+[[ ${#COMPONENTS[@]} -eq 0 ]] && install_all && exit $EXIT_SUCCESS
+
+for c in "${COMPONENTS[@]}"; do
+  case "$c" in
+  all) install_all ;;
+  bash) install_bash ;;
+  git) install_git ;;
+  nvim) install_nvim ;;
+  neofetch) install_neofetch ;;
+  clang) install_clang ;;
+  vscode) install_vscode ;;
+  docker) install_docker ;;
+  nvidia) install_nvidia ;;
+  obs) install_obs ;;
+  servers) install_servers ;;
+  linux) install_linux ;;
+  esac
+done
+
+exit $EXIT_SUCCESS
