@@ -1,0 +1,81 @@
+# ==================================================================================
+# .FILE
+#   .bash_loaders
+#
+# .SYNOPSIS
+#   Environment loader script for initializing development toolchains and
+#   environment variables.
+#
+# .DESCRIPTION
+#   This script is sourced during the initialization of an interactive Bash
+#   session. It configures environment variables, initializes language
+#   toolchains, and loads additional shell features such as bash completion.
+#
+#   It ensures that tools such as Java, Maven, Node.js (NVM), SDKMAN,
+#   Angular CLI, and other development utilities are properly configured
+#   and accessible from the shell.
+#
+# .PARAMETER N/A
+#   This file does not accept parameters; it is sourced automatically by
+#   the shell through `.bashrc`.
+#
+# .INPUTS
+#   None
+#
+# .OUTPUTS
+#   Environment variables and PATH modifications available to the shell.
+#
+# .NOTES
+#   Version       : 1.0
+#   Author        : @ZouariOmar <zouariomar20@gmail.com>
+#   Created       : 2026-03-13
+#   Change Log    : Initial version
+#
+# .EXAMPLE
+#   N/A — this file is sourced automatically by the shell.
+# ==================================================================================
+
+# PIO
+# See https://github.com/ZouariOmar/dot-files/blob/ba66e63e66659133b5a73090e918925d86e716d9/bash/.bashrc
+
+# Android SDK
+# See https://github.com/ZouariOmar/dot-files/blob/ba66e63e66659133b5a73090e918925d86e716d9/bash/.bashrc
+
+# Symfony
+# See https://github.com/ZouariOmar/dot-files/blob/ba66e63e66659133b5a73090e918925d86e716d9/bash/.bashrc
+
+# SDKMAN (for JVM toolchains)
+# See https://github.com/ZouariOmar/dot-files/blob/ba66e63e66659133b5a73090e918925d86e716d9/bash/.bashrc
+
+# Editor
+export EDITOR="nv"
+
+# Java
+export JAVA_HOME=/usr/lib/jvm/default
+export PATH=$JAVA_HOME/bin:$PATH
+
+# Maven
+export M2_HOME="$HOME/.m2"
+
+# Node package manager (npm)
+NPM_GLOBAL_HOME="$HOME/.npm-global"
+export PATH="$NPM_GLOBAL_HOME/bin:$PATH"
+
+# Node version manager (nvm)
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # Enable nvm bash_completion
+
+# Local bin
+LOCAL_BIN="$HOME/.local/bin"
+export PATH="$LOCAL_BIN:$PATH"
+
+# Sdkman
+[[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
+
+# Angular -- Load angular cli autocompletion
+source <(ng completion script)
+
+# ==================================================================================
+# End of .bash_loaders
+# ==================================================================================

@@ -136,11 +136,19 @@ require_cmd() {
 install_bash() {
   log_section "Bash"
   local src="$DOT_FILES_DIR/bash"
+
+  # Under `$HOME/`
   symlink "$src/.bashrc" "$HOME/.bashrc"
   symlink "$src/.bash_profile" "$HOME/.bash_profile"
   symlink "$src/.bash_logout" "$HOME/.bash_logout"
   symlink "$src/.bash_history" "$HOME/.bash_history"
+
+  # Under `$HOME/.bash/`
   symlink "$src/.bash/.bash_colors" "$HOME/.bash/.bash_colors"
+  symlink "$src/.bash/.bash_colors" "$HOME/.bash/.bash_aliases"
+  symlink "$src/.bash/.bash_colors" "$HOME/.bash/.bash_functions"
+  symlink "$src/.bash/.bash_colors" "$HOME/.bash/.bash_loaders"
+
   log_ok "Bash dotfiles installed."
 }
 
