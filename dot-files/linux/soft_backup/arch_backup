@@ -56,14 +56,11 @@ sudo pacman -S ccache
 # Install nodejs and npm
 sudo pacman -Syu nodejs npm
 
-# Install NVM
-curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
-
 # Install yarn
 sudo pacman -Sy yarn
 
 # Install Qt6 base development pkgs
-sudo pacman -S qtcreator-devel(qtcreator) qt6-base qt6-3d qt6-multimedia qt6-network qt6-tools qt6-svg qt6-wayland
+sudo pacman -S qtcreator-devel qtcreator qt6-base qt6-3d qt6-multimedia qt6-network qt6-tools qt6-svg qt6-wayland
 
 # Install doxygen
 sudo pacman -S doxygen
@@ -71,8 +68,18 @@ sudo pacman -S doxygen
 # Install postman
 sudo yay -S postman-bin
 
-# Instaall php
-sudo pacman -S php php-fpm php-mysql phpmyadmin
+# Install php
+sudo pacman -S php
+
+# Install phpmyadmin
+sudo pacman -S phpmyadmin
+
+# Install php extensions
+sudo pacman -S php-fpm   \
+	       php-mysql \ 
+	       php-gd    \
+	       php-redis \
+	       php-igbinary
 
 # Install OBS
 sudo pacman -S obs-studio
@@ -95,7 +102,7 @@ sudo pacman -S ufw && sudo systemctl enable ufw && sudo systemctl start ufw
 # Install Bash Completion
 sudo pacman -S bash-completion
 
-# Install the next gen ls command 
+# Install the next gen ls command
 sudo pacman -S lsd
 
 # Install Docker (!need pass and gnup(gpg))
@@ -163,7 +170,7 @@ sudo pacman -S openshot
 # Install graphviz (for doxygen)
 sudo pacman -S graphviz
 
-# Install texlive (for latex documantion, doxygen-latex) 
+# Install texlive (for latex documantion, doxygen-latex)
 sudo pacman -S texlive
 
 # Install valgrind (debuging tool)
@@ -254,7 +261,7 @@ sudo pacman -Sy dpkg
 
 # Install tesseract-ocr
 sudo pacman -Sy tesseract
-sudo pacman -Sy tesseract-data-eng # For english data 
+sudo pacman -Sy tesseract-data-eng # For english data
 
 # Install jupyter
 sudo pacman -Sy jupyterlab # [Recommended]
@@ -275,7 +282,7 @@ yay -Sy android-studio
 sudo pacman -Sy papirus-icon-theme
 
 # Install `impala` ()
-# Enable iwd (sudo systemctl start iwd) 
+# Enable iwd (sudo systemctl start iwd)
 sudo pacman -S impala
 
 # Install Bitchat
@@ -311,7 +318,7 @@ sudo pacman -Sy grup
 # Install GNS3 Prerequesits + docker
 yay -S qemu docker vpcs dynamips libvirt dnsmasq ubridge bridge-utils inetutils
 
-# Install GNS3 Server and GUI 
+# Install GNS3 Server and GUI
 yay -Sy gns3-server gns3-gui
 yay -Sy gns3-server-git gns3-gui-git # More stable
 
@@ -319,7 +326,7 @@ yay -Sy gns3-server-git gns3-gui-git # More stable
 sudo pacman -Sy nfs-utils
 
 # Install Vmware (workstation && player)
-yay -Sy  vmware-keymaps vmware-workstation
+yay -Sy vmware-keymaps vmware-workstation
 
 # Install Linux headers
 sudo pacman -Sy linux-headers
@@ -362,3 +369,20 @@ sudo pacman -S --noconfirm okular
 
 # Install Flex (Fast Lexical Analyzer Generator)
 sudo pacman -S --noconfirm flex
+
+# Install tigervnc
+sudo pacman -S --noconfirm tigervnc
+
+# Install github-cli (gh)
+sudo pacman -S --noconfirm github-cli
+
+# Install appimagetool AppImage
+sudo pacman -Sy python-pip python-setuptools binutils patchelf desktop-file-utils gdk-pixbuf2 wget fakeroot strace
+sudo wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage -O /usr/local/bin/appimagetool
+sudo chmod +x /usr/local/bin/appimagetool
+
+# Install scrcpy
+sudo pacman -S --noconfirm scrcpy
+
+# Install redis server
+sudo pacman -S --noconfirm redis

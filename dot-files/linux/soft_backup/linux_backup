@@ -78,8 +78,14 @@ npm install -g live-server
 # Install browder sync (support proxy server)
 npm install -g browser-sync
 
+# Install NVM
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
 # Install copilot-cli
 curl -fsSL https://gh.io/copilot-install | bash
 
-# Install tigervnc
-sudo pacman -Sy tigervnc
+# Install UV
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Install ui-ux-pro-max-skill skills
+npx uipro-cli@latest init
