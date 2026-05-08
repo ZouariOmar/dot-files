@@ -148,6 +148,7 @@ install_bash() {
   symlink "$src/.bash/.bash_colors" "$HOME/.bash/.bash_aliases"
   symlink "$src/.bash/.bash_colors" "$HOME/.bash/.bash_functions"
   symlink "$src/.bash/.bash_colors" "$HOME/.bash/.bash_loaders"
+  symlink "$src/.bash/.bash_dev_news" "$HOME/.bash/.bash_dev_news"
 
   log_ok "Bash dotfiles installed."
 }

@@ -36,11 +36,11 @@ eval "$(oh-my-posh init bash --config /home/zouari_omar/.local/share/themes/${PO
 # Ignore duplicate commands in the history
 HISTCONTROL=ignoredups
 
+# Set bash home
+BASH_HOME="$HOME/.bash"
+
 # Enable bash completion features
 [[ -s /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion
-
-# set bash home
-BASH_HOME="$HOME/.bash"
 
 # Init bash colors
 [[ -s ${BASH_HOME}/.bash_colors ]] && . "${BASH_HOME}/.bash_colors"
@@ -53,6 +53,9 @@ BASH_HOME="$HOME/.bash"
 
 # Init bash loaders
 [[ -s ${BASH_HOME}/.bash_loaders ]] && . "${BASH_HOME}/.bash_loaders"
+
+# Load bash dev news
+[[ -s ${BASH_HOME}/.bash_dev_news ]] && . "${BASH_HOME}/.bash_dev_news"
 
 # ==================================================================================
 # End of .bashrc

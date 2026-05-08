@@ -36,16 +36,20 @@
 # ==================================================================================
 
 # PIO
-# See https://github.com/ZouariOmar/dot-files/blob/ba66e63e66659133b5a73090e918925d86e716d9/bash/.bashrc
+# export PLATFORMIO_HOME="$HOME/.local/bin"
+# export PATH=$PATH:$PLATFORMIO_HOME
 
 # Android SDK
-# See https://github.com/ZouariOmar/dot-files/blob/ba66e63e66659133b5a73090e918925d86e716d9/bash/.bashrc
-
-# Symfony
-# See https://github.com/ZouariOmar/dot-files/blob/ba66e63e66659133b5a73090e918925d86e716d9/bash/.bashrc
+# export ANDROID_HOME=$HOME/Android/Sdk
+# export PATH=$PATH:/opt/android-studio/bin
+# export PATH=$PATH:$ANDROID_HOME/emulator
+# export PATH=$PATH:$ANDROID_HOME/platform-tools
+# export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
 
 # SDKMAN (for JVM toolchains)
-# See https://github.com/ZouariOmar/dot-files/blob/ba66e63e66659133b5a73090e918925d86e716d9/bash/.bashrc
+# export SDKMAN_DIR="$HOME/.sdkman"
+# export PATH="$PATH:$HOME/.sdkman/candidates/java/current/bin"
+# [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
 
 # Editor
 export EDITOR="nv"
@@ -57,6 +61,10 @@ export PATH=$JAVA_HOME/bin:$PATH
 # Maven
 export M2_HOME="$HOME/.m2"
 
+# Symfony
+export SYMFONY_HOME="$HOME/.symfony5"
+export PATH="$SYMFONY_HOME/bin:$PATH"
+
 # Node package manager (npm)
 NPM_GLOBAL_HOME="$HOME/.npm-global"
 export PATH="$NPM_GLOBAL_HOME/bin:$PATH"
@@ -66,12 +74,14 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # Enable nvm bash_completion
 
+# Pyenv (python versions manager)
+export PYENV_ROOT="$HOME/.pyenv"
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init - bash)"
+
 # Local bin
 LOCAL_BIN="$HOME/.local/bin"
 export PATH="$LOCAL_BIN:$PATH"
-
-# Sdkman
-[[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
 
 # Angular -- Load angular cli autocompletion
 source <(ng completion script)

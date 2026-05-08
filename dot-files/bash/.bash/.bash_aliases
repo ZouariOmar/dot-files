@@ -81,12 +81,12 @@ alias neo='neofetch --config /home/zouari_omar/.config/neofetch/acenoster.conf' 
 alias pacu='sudo pacman -Syu'  # Updating package database and upgrading system
 alias pacc='sudo pacman -Sc'   # Clearing unused pacman cache
 alias pacls='pacman -Qs'       # List all installed pacman packages
-alias paci='sudo pacman -Sy'   # Install pacman package
+alias paci='sudo pacman -S'    # Install pacman package
 alias pacrm='sudo pacman -Rns' # Remove a specific pacman package
 alias yayu='yay -Syu'          # Update all installed packages using yay
 alias yayc='yay -Sc'           # Clean up unnecessary package files using yay
 alias yayls='yay -Qs'          # List all installed AUR packages
-alias yayi='yay -Sy'           # Install AUR package
+alias yayi='yay -S'            # Install AUR package
 alias yayrm='sudo yay -Rns'    # Remove a specific yay package
 
 # ==================================================================================
@@ -107,6 +107,11 @@ alias nv='nvim'
 alias g++='g++ -std=c++23 -Wall -Wextra -Wpedantic -O2'
 alias gcc='gcc -std=c17 -Wall -Wextra -Wpedantic -O2'
 alias jlab='jupyter-lab'
+
+# ==================================================================================
+# Other aliases
+# ==================================================================================
+alias dn='devnews'
 
 # ==================================================================================
 # End of .bash_aliases

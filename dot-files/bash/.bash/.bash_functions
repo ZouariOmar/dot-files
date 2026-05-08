@@ -74,47 +74,6 @@ yaycc() {
   [ -n "$pkgs" ] && sudo yay -Rns $pkgs
 }
 
-# -----------------------------------------
-# .FUNCTION
-#   pacnews
-# .SYNOPSIS
-#   Show latest Arch Linux news before upgrading
-# .DESCRIPTION
-#   pacnews <latest_news_number>
-#   Fetches the latest news entries from the Arch Linux website and displays
-#   them in the terminal. After showing the news, prompts the user whether
-#   to proceed with a system upgrade via `sudo pacman -Syu`.
-# .USAGE
-#   pacnews 5      # Show the 5 most recent Arch Linux news items
-# .AUTHOR
-#   @ZouariOmar (zouariomar20@gmail.com)
-# .CREATED
-#   2026-03-07
-# -----------------------------------------
-pacnews() {
-  if [ "$#" -ne 1 ]; then
-    echo -e "${YELLOW}Usage:${RESET} pacnews <latest_news_number>"
-    return 1
-  fi
-
-  local url="https://archlinux.org/news/"
-
-  echo -e "${BLUE}Latest Arch Linux news:${RESET}"
-  curl -s ${url} |
-    grep -Eo 'href="/news/[^"]+"' |
-    cut -d'"' -f2 |
-    head -n "$1" |
-    sed 's|^|https://archlinux.org|'
-
-  echo -e ".\n.\n.\n."
-  read -p "Do you want to continue with the system upgrade? [y/N] " answer
-  if [[ "$answer" =~ ^[yY]$ ]]; then
-    sudo pacman -Syu
-  else
-    echo "Upgrade cancelled."
-  fi
-}
-
 # ==================================================================================
 # Network functions
 # ==================================================================================
@@ -139,10 +98,10 @@ prvip() {
 # Background / Foreground colors functions
 # ==================================================================================
 
-FG_256() { echo -e "\e[38;5;${1}m"; }           # 256-color foreground -- Usage: FG_256 [0..256]
-BG_256() { echo -e "\e[48;5;${1}m"; }           # 256-color background -- Usage: BG_256 [0..256]
-RGB_FG() { echo -e "\e[38;2;${1};${2};${3}m"; } # Truecolor foreground -- Usage: RGB_FG [0..256] [0..256] [0..256]
-RGB_BG() { echo -e "\e[48;2;${1};${2};${3}m"; } # Truecolor background -- Usage: RGB_BG [0..256] [0..256] [0..256]
+# FG_256() { echo -e "\e[38;5;${1}m"; }           # 256-color foreground -- Usage: FG_256 [0..256]
+# BG_256() { echo -e "\e[48;5;${1}m"; }           # 256-color background -- Usage: BG_256 [0..256]
+# RGB_FG() { echo -e "\e[38;2;${1};${2};${3}m"; } # Truecolor foreground -- Usage: RGB_FG [0..256] [0..256] [0..256]
+# RGB_BG() { echo -e "\e[48;2;${1};${2};${3}m"; } # Truecolor background -- Usage: RGB_BG [0..256] [0..256] [0..256]
 
 # ==================================================================================
 # File Manager / System Utilities
@@ -194,28 +153,28 @@ n() {
 # .CREATED
 #   2026-03-13
 # -----------------------------------------
-kpg() {
-  if [[ $# -ne 2 ]]; then
-    echo -e "${YELLOW}[Usage]${RESET} kpg <attribute> <entry>"
-    return 1
-  fi
-
-  local KDBX_PATH="to_your_database.kdbx"
-  local KEYFILE="to_your_kdbx_key.key"
-  local entry=$2
-  local attribute=$1
-  local value
-
-  # Fetch the requested attribute from the specified entry
-  value=$(keepassxc-cli show -sa "$attribute" "$KDBX_PATH" "$entry" --key-file "${KEYFILE}")
-
-  if [[ -t 1 ]]; then
-    echo "$value" | xclip -selection clipboard
-    echo -e "${GREEN}Copied To Clipboard!${RESET}"
-  else
-    echo "$value"
-  fi
-}
+# kpg() {
+#   if [[ $# -ne 2 ]]; then
+#     echo -e "${YELLOW}[Usage]${RESET} kpg <attribute> <entry>"
+#     return 1
+#   fi
+# 
+#   local KDBX_PATH="$HOME/Desktop/passwd/path_to_kdbx_file.kdbx"
+#   local KEYFILE="$HOME/Desktop/passwd/path_to_key_file.key"
+#   local entry=$2
+#   local attribute=$1
+#   local value
+# 
+#   # Fetch the requested attribute from the specified entry
+#   value=$(keepassxc-cli show -sa "$attribute" "$KDBX_PATH" "$entry" --key-file "${KEYFILE}")
+# 
+#   if [[ -t 1 ]]; then
+#     echo "$value" | xclip -selection clipboard
+#     echo -e "${GREEN}Copied To Clipboard!${RESET}"
+#   else
+#     echo "$value"
+#   fi
+# }
 
 # -----------------------------------------
 # .FUNCTION
@@ -233,15 +192,66 @@ kpg() {
 # .CREATED
 #   2026-03-07
 # -----------------------------------------
-st0() {
-  if [[ $# -ne 1 ]]; then
-    echo -e "${YELLOW}[Usage]${RESET} st0 <shared_info>"
-    return ${EXIT_FAILURE}
-  fi
+# st0() {
+#   if [[ $# -ne 1 ]]; then
+#     echo -e "${YELLOW}[Usage]${RESET} st0 <shared_info>"
+#     return 1
+#   fi
+# 
+#   shared_info=$1
+#   ${shared_info} | curl -F 'file=@-' 0x0.st | xclip -selection clipboard
+# }
 
-  shared_info=$1
-  ${shared_info} | curl -F 'file=@-' 0x0.st | xclip -selection clipboard
-}
+
+# -----------------------------------------
+# .FUNCTION
+#   uimg
+# .SYNOPSIS
+#   Upload an image to FreeImage.host and return the public URL.
+# .DESCRIPTION
+#   uimg <file_path>
+#     - Checks if the file exists.
+#     - Uploads the image to FreeImage.host using the provided API key.
+#     - Returns the display URL of the uploaded image.
+#     - Prints error messages if the file doesn't exist or upload fails.
+# .PARAMETER
+#   file_path
+#     Path to the image file to be uploaded.
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-03-25
+# -----------------------------------------
+# uimg() {
+#   if [[ $# -ne 1 ]]; then
+#     echo -e "${YELLOW}[Usage]${RESET} uimg <image_file>"
+#     return 1
+#   fi
+# 
+#   local file_path="$1"
+#   local api_key="6d207e02198a847aa98d0a2a901485a5"
+#   local upload_url="https://freeimage.host/api/1/upload"
+# 
+#   if [[ ! -f "$file_path" ]]; then
+#     echo -e "${RED}[ERROR]${RESET} File does not exist: $file_path"
+#     return 1
+#   fi
+# 
+#   # Upload the image
+#   response=$(curl -s -X POST "$upload_url" \
+#     -F "key=$api_key" \
+#     -F "source=@$file_path" \
+#     -F "format=json")
+# 
+#   display_url=$(echo "$response" | grep -oP '"display_url"\s*:\s*"\K[^"]+' | sed 's/\\\//\//g')
+# 
+#   if [[ -n "$display_url" ]]; then
+#     echo -e "${GREEN}[INFO]${RESET} Image uploaded successfully: ${YELLOW}${display_url}${RESET}"
+#   else
+#     echo -e "${RED}[ERROR]${REST} Upload failed. Response: \n${response}"
+#     return 2
+#   fi
+# }
 
 # ==================================================================================
 # Docker / Oracle Database functions
