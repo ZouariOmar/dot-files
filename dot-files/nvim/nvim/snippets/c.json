@@ -17,7 +17,7 @@
     "body": [
       "/**",
       " * @file      ${1:filename.c}",
-      " * @author    ${2:@ZouariOmar} <${3:zouariomar20@gmail.com}>",
+      " * @author    ${2:@ZouariOmar} (${3:zouariomar20@gmail.com})",
       " * @brief     ${4:filename source file}",
       " * @version   ${5:0.1}",
       " * @date      ${6:DD/MM/YYYY}",

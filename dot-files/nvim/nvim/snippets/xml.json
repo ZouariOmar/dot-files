@@ -7,8 +7,8 @@
       "",
       "    ${2:Short description of this XML file}",
       "",
-      "    @author ${3:@ZouariOmar} <${4:zouariomar20@gmail.com}>",
-      "    @version ${5:0.1}",
+      "    @author ${3:@ZouariOmar} (${4:zouariomar20@gmail.com})",
+      "    @version ${5:1.0.0}",
       "    @since ${6:YYYY-MM-DD}",
       "-->"
     ],

@@ -12,7 +12,9 @@ return {
         tsserver = {},
         svelte = {},
         eslint = {},
-        html = {},
+        html = {
+          filetypes = { "html", "twig" },
+        },
         pyright = {},
         sumneko_lua = {},
         yamlls = {},

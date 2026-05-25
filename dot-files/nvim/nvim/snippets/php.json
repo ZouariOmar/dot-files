@@ -1,0 +1,38 @@
+{
+  "docfunc": {
+    "prefix": "doc",
+    "body": [
+      "/**",
+      " * ${1:Function summary}",
+      " *",
+      " * @param ${2:mixed} ${3:\\$var} ${4:Description}",
+      " * @return ${5:void}",
+      " * @throws ${6:Exception}",
+      " */",
+      "public function ${7:functionName}(${8:mixed \\$var} = ${9:null}): ${5:void}",
+      "{",
+      "    ${0}",
+      "}"
+    ],
+    "description": "PHP function with docblock, parameter, return type, and throws"
+  },
+  "docfile": {
+    "prefix": "doch",
+    "body": [
+      "/**",
+      " * ${1:File description}",
+      " *",
+      " * PHP version ${2:8.4.12}",
+      " *",
+      " * @category ${3:Category}",
+      " * @package  ${4:Package}",
+      " * @author   ${5:@ZouariOmar (zouariomar20@gmail.com)",
+      " * @license  ${6:GPL3.0 License}",
+      " * @link     ${7:https://example.com}",
+      " */",
+      "",
+      "${0}"
+    ],
+    "description": "PHP file-level docblock"
+  }
+}

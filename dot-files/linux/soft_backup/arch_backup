@@ -386,3 +386,9 @@ sudo pacman -S --noconfirm scrcpy
 
 # Install redis server
 sudo pacman -S --noconfirm redis
+
+# Install scene-builder
+yay -S --noconfirm javafx-scenebuilder
+
+# Install dosfstools (mkfs)
+sudo pacman -S --noconfirm dosfstools

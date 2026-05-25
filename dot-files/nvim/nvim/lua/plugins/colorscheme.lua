@@ -18,6 +18,10 @@ return {
           treesitter = true,
           nvimtree = true,
         },
+        float = {
+          transparent = false,
+          solid = false,
+        },
       })
       vim.cmd.colorscheme("catppuccin")
     end,

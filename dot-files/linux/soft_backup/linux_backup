@@ -89,3 +89,6 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Install ui-ux-pro-max-skill skills
 npx uipro-cli@latest init
+
+# Install Vix.cpp
+curl -fsSL https://vixcpp.com/install.sh | bash
