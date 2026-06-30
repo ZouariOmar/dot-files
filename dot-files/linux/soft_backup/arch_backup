@@ -392,3 +392,15 @@ yay -S --noconfirm javafx-scenebuilder
 
 # Install dosfstools (mkfs)
 sudo pacman -S --noconfirm dosfstools
+
+# Install gitflow (>$ git flow)
+yay -S --noconfirm gitflow-avh
+
+# Install git-cliff
+sudo pacman -S --noconfirm git-cliff
+
+# Install glab (gitlab cli)
+sudo pacman -S --noconfirm glab
+
+# Install MySQL C++ connector
+yay -S --noconfirm mysql-connector-c++

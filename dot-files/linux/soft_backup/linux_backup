@@ -92,3 +92,21 @@ npx uipro-cli@latest init
 
 # Install Vix.cpp
 curl -fsSL https://vixcpp.com/install.sh | bash
+
+# Install supabase-cli
+curl -fsSL https://raw.githubusercontent.com/supabase/cli/main/install | bash
+
+# Install free claude code cli
+curl -fsSL "https://github.com/Alishahryar1/free-claude-code/blob/main/scripts/install.sh?raw=1" | sh
+
+# Install claude cli
+curl -fsSL https://claude.ai/install.sh | bash
+
+# Install bun
+curl -fsSL https://bun.com/install | bash
+
+# Install vercel
+bun add -g vercel
+
+# Install uv (for python)
+curl -LsSf https://astral.sh/uv/install.sh | sh
