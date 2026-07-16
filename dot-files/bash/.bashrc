@@ -20,43 +20,41 @@
 #   Environment settings, shell behavior configurations, and aliases.
 #
 # .NOTES
-#   Version       : 1.2
-#   Author        : @ZouariOmar <zouariomar20@gmail.com>
-#   Created       : 2025-09-12
-#   Change Log    : 58a8d8a
+#   Version       : 1.3
+#   Author        : @ZouariOmar (zouariomar20@gmail.com)
+#   Created       : 2026-07-16
+#   Change Log    : 316022d
 #
 # .EXAMPLE
 #   N/A — this file is sourced automatically by the shell.
+#
+# shellcheck disable=SC1091
 # ==================================================================================
 
-# Set bash theme
+# Bash theme
 POSH_THEME="blue-owl"
 eval "$(oh-my-posh init bash --config /home/zouari_omar/.local/share/themes/${POSH_THEME}.omp.json)"
 
 # Ignore duplicate commands in the history
 HISTCONTROL=ignoredups
 
-# Set bash home
+# Bash home
 BASH_HOME="$HOME/.bash"
 
-# Enable bash completion features
+# Bash completion
 [[ -s /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion
 
-# Init bash colors
+# Bash colors
 [[ -s ${BASH_HOME}/.bash_colors ]] && . "${BASH_HOME}/.bash_colors"
 
-# Init bash aliases
+# Bash aliases
 [[ -s ${BASH_HOME}/.bash_aliases ]] && . "${BASH_HOME}/.bash_aliases"
 
-# Init bash functions
+# Bash functions
 [[ -s ${BASH_HOME}/.bash_functions ]] && . "${BASH_HOME}/.bash_functions"
 
-# Init bash loaders
+# Bash loaders
 [[ -s ${BASH_HOME}/.bash_loaders ]] && . "${BASH_HOME}/.bash_loaders"
 
-# Load bash dev news
-[[ -s ${BASH_HOME}/.bash_dev_news ]] && . "${BASH_HOME}/.bash_dev_news"
-
-# ==================================================================================
-# End of .bashrc
-# ==================================================================================
+# Bash news
+[[ -s ${BASH_HOME}/.bash_news ]] && . "${BASH_HOME}/.bash_news"

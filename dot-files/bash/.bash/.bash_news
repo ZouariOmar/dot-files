@@ -1,0 +1,371 @@
+#!/usr/bin/env bash
+# ==================================================================================
+# .FILE
+#   .bash_news
+#
+# .SYNOPSIS
+#   Fetch and display the latest Linux and developer news from supported
+#   online sources.
+#
+# .DESCRIPTION
+#   Provides the `news` command and supporting helper functions to retrieve
+#   recent articles from predefined Linux and developer-focused websites.
+#
+#   The script validates user input, handles help and usage requests, fetches
+#   article links from each source, and presents the results as a numbered list.
+#
+#   Currently supported sources include:
+#     - Arch Linux
+#     - It's FOSS
+#
+# .PARAMETERS
+#   The `news` command accepts:
+#     $1  News source identifier.
+#     $2  Number of articles to display (optional; default: 10).
+#
+# .INPUTS
+#   User-supplied command-line arguments.
+#
+# .OUTPUTS
+#   Help messages, usage information, error messages, or a numbered list of
+#   article URLs.
+#
+# .NOTES
+#   Version       : 1.0
+#   Author        : @ZouariOmar (zouariomar20@gmail.com)
+#   Created       : 2026-03-13
+#   Changelog     : 316022d
+#
+# .EXAMPLES
+#   news arch
+#   news arch 5
+#   news itsfoss 10
+#   news --help
+# ==================================================================================
+
+# News source url's
+declare -A URL=(
+  [arch]="https://archlinux.org/news/"
+  [itsfoss]="https://itsfoss.com/news/"
+)
+
+# Regular expressions used to extract article links
+declare -A REGEX=(
+  [arch]='href="/news/[^"]+"'
+  [itsfoss]='https://itsfoss.com/news/[^"]+'
+)
+
+# URL prefixes for relative links
+declare -A PREFIX=(
+  [arch]="https://archlinux.org"
+  [itsfoss]=""
+)
+
+# -----------------------------------------
+# .FUNCTION
+#   _news_help
+#
+# .SYNOPSIS
+#   Display the help message for the `news`
+#   command.
+#
+# .DESCRIPTION
+#   Prints the usage information, available
+#   news sources, supported options, and
+#   example commands for the `news` utility.
+#
+# .PARAMETERS
+#   None.
+#
+# .OUTPUTS
+#   Writes a formatted help message to
+#   standard output.
+#
+# .RETURNS
+#   0  Always succeeds.
+#
+# .NOTES
+#   The help text uses the predefined color
+#   variables:
+#     - ${CYAN}
+#     - ${YELLOW}
+#     - ${RESET}
+#
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+#
+# .CREATED
+#   2026-07-16
+# -----------------------------------------
+_news_help() {
+  cat <<EOF
+${CYAN}news${RESET} - Fetch latest Linux/dev news
+
+${YELLOW}USAGE:${RESET}
+  news <source> [count=10]
+
+${YELLOW}SOURCES:${RESET}
+  arch        Latest Arch Linux news
+  itsfoss     Latest It's FOSS articles
+
+${YELLOW}OPTIONS:${RESET}
+  -h, --help      Show this help message
+  -u, --usage     Show short usage
+
+${YELLOW}EXAMPLES:${RESET}
+  news arch 5
+  news itsfoss 10
+EOF
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   _news_usage
+#
+# .SYNOPSIS
+#   Display the short usage for the `news`
+#   command.
+#
+# .DESCRIPTION
+#   Prints a concise one-line usage message.
+#   Intended for quick reference or when the
+#   user provides invalid or incomplete
+#   arguments.
+#
+# .PARAMETERS
+#   None.
+#
+# .OUTPUTS
+#   Writes a formatted usage string to
+#   standard output.
+#
+# .RETURNS
+#   0  Always succeeds.
+#
+# .NOTES
+#   The output uses the predefined color
+#   variables:
+#     - ${YELLOW}
+#     - ${RESET}
+#
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+#
+# .CREATED
+#   16/07/2026
+# -----------------------------------------
+_news_usage() {
+  echo -e "${YELLOW}[USAGE]${RESET} news <source> [count=10]"
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   _news_validate_count
+#
+# .SYNOPSIS
+#   Validate the number of news entries to
+#   retrieve.
+#
+# .DESCRIPTION
+#   Checks whether the provided count is a
+#   positive integer. If the validation fails,
+#   an error message is printed and a non-zero
+#   status is returned.
+#
+# .PARAMETERS
+#   $1  Number of news entries requested.
+#
+# .OUTPUTS
+#   On failure, writes an error message to
+#   standard output.
+#
+# .RETURNS
+#   0  The count is a valid positive integer.
+#   1  The count is invalid.
+#
+# .NOTES
+#   The error message uses the predefined
+#   color variables:
+#     - ${RED}
+#     - ${RESET}
+#
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+#
+# .CREATED
+#   16/07/2026
+# -----------------------------------------
+_news_validate_count() {
+  local count="$1"
+
+  if ! [[ "$count" =~ ^[0-9]+$ ]]; then
+    echo -e "${RED}[ERROR]${RESET} Count must be a positive integer."
+    return 1
+  fi
+
+  return 0
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   _news_fetch
+#
+# .SYNOPSIS
+#   Fetch and display the latest news from
+#   a supported source.
+#
+# .DESCRIPTION
+#   Downloads the HTML content of the
+#   specified news source, extracts article
+#   links using the source-specific regular
+#   expression, removes duplicate and
+#   unnecessary URL components, prefixes each
+#   entry with the appropriate base URL, and
+#   displays the requested number of results
+#   as a numbered list.
+#
+# .PARAMETERS
+#   $1  News source identifier (e.g., arch,
+#       itsfoss).
+#   $2  Maximum number of news entries to
+#       display.
+#
+# .OUTPUTS
+#   Writes a formatted list of news article
+#   URLs to standard output.
+#
+# .RETURNS
+#   0  If the command pipeline completes
+#   successfully. Non-zero if one of the
+#   underlying commands (e.g., curl) fails.
+#
+# .DEPENDENCIES
+#   - curl
+#   - grep
+#   - sed
+#   - sort
+#   - head
+#   - nl
+#
+# .NOTES
+#   Requires the following associative arrays
+#   to be defined:
+#     - URL
+#     - REGEX
+#     - PREFIX
+#
+#   Uses the predefined color variables:
+#     - ${BLUE}
+#     - ${RESET}
+#
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+#
+# .CREATED
+#   16/07/2026
+# -----------------------------------------
+_news_fetch() {
+  local source="$1"
+  local count="$2"
+
+  echo -e "${BLUE}[INFO] Latest ${source^^} News\n.\n.\n.${RESET}"
+
+  curl -s "${URL[$source]}" |
+    grep -Eo "${REGEX[$source]}" |
+    sed 's/href="//' |
+    sed 's/"$//' |
+    sed 's/[?#].*//' |
+    sort -u |
+    head -n "$count" |
+    sed "s|^|${PREFIX[$source]}|" |
+    nl -w2 -s'. '
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   news
+#
+# .SYNOPSIS
+#   Fetch and display the latest news from
+#   a supported source.
+#
+# .DESCRIPTION
+#   Parses command-line arguments, validates
+#   user input, handles help and usage requests,
+#   verifies that the requested news source is
+#   supported, and retrieves the latest news
+#   articles from the selected source.
+#
+# .PARAMETERS
+#   $1  News source (required).
+#   $2  Number of news entries to display
+#       (optional; default: 10).
+#
+# .OUTPUTS
+#   Writes help, usage information, error
+#   messages, or a numbered list of news
+#   article URLs to standard output.
+#
+# .RETURNS
+#   0  Command completed successfully.
+#   1  Invalid arguments, invalid count,
+#      or unsupported news source.
+#
+# .DEPENDENCIES
+#   - _news_help
+#   - _news_usage
+#   - _news_validate_count
+#   - _news_fetch
+#
+# .NOTES
+#   Supported sources are defined by the
+#   `URL` associative array.
+#
+#   Recognized options:
+#     -h, --help    Display the full
+#                   help message.
+#     -u, --usage   Display the short
+#                   usage message.
+#
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+#
+# .CREATED
+#   16/07/2026
+# -----------------------------------------
+news() {
+  if [ "$#" -lt 1 ] || [ "$#" -gt 2 ]; then
+    _news_usage
+    return 1
+  fi
+
+  case "$1" in
+  -h | --help)
+    _news_help
+    return 0
+    ;;
+
+  -u | --usage)
+    _news_usage
+    return 0
+    ;;
+
+  "")
+    _news_usage
+    return 1
+    ;;
+  esac
+
+  local source="$1"
+  local count="${2:-10}"
+
+  _news_validate_count "$count" || return 1
+
+  if [[ -z "${URL[$source]}" ]]; then
+    echo -e "${RED}[ERROR]${RESET} Unknown source '$source'\n"
+    _news_help
+    return 1
+  fi
+
+  _news_fetch "$source" "$count"
+}

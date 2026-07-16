@@ -404,3 +404,9 @@ sudo pacman -S --noconfirm glab
 
 # Install MySQL C++ connector
 yay -S --noconfirm mysql-connector-c++
+
+# Install aws-cli
+sudo pacman -S --noconfirm aws-cli # or `aws-cli-v2`
+
+# Install jq (for json parsing)
+sudo pacman -S --noconfirm jq

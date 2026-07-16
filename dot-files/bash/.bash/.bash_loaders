@@ -27,32 +27,20 @@
 #
 # .NOTES
 #   Version       : 1.0
-#   Author        : @ZouariOmar <zouariomar20@gmail.com>
+#   Author        : @ZouariOmar (zouariomar20@gmail.com)
 #   Created       : 2026-03-13
-#   Change Log    : Initial version
+#   Changelog     : 316022d
 #
 # .EXAMPLE
 #   N/A — this file is sourced automatically by the shell.
 # ==================================================================================
 
-# PIO
-# export PLATFORMIO_HOME="$HOME/.local/bin"
-# export PATH=$PATH:$PLATFORMIO_HOME
-
-# Android SDK
-# export ANDROID_HOME=$HOME/Android/Sdk
-# export PATH=$PATH:/opt/android-studio/bin
-# export PATH=$PATH:$ANDROID_HOME/emulator
-# export PATH=$PATH:$ANDROID_HOME/platform-tools
-# export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
-
-# SDKMAN (for JVM toolchains)
-# export SDKMAN_DIR="$HOME/.sdkman"
-# export PATH="$PATH:$HOME/.sdkman/candidates/java/current/bin"
-# [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
+# Local bin
+LOCAL_BIN="$HOME/.local/bin"
+export PATH="$LOCAL_BIN:$PATH"
 
 # Editor
-export EDITOR="nv"
+export EDITOR="vim"
 
 # Java
 export JAVA_HOME=/usr/lib/jvm/default
@@ -60,10 +48,6 @@ export PATH=$JAVA_HOME/bin:$PATH
 
 # Maven
 export M2_HOME="$HOME/.m2"
-
-# Symfony
-export SYMFONY_HOME="$HOME/.symfony5"
-export PATH="$SYMFONY_HOME/bin:$PATH"
 
 # Node package manager (npm)
 NPM_GLOBAL_HOME="$HOME/.npm-global"
@@ -74,18 +58,46 @@ export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # Enable nvm bash_completion
 
-# Pyenv (python versions manager)
-export PYENV_ROOT="$HOME/.pyenv"
-[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init - bash)"
+# Supabase
+export SUPABASE_HOME="$HOME/.supabase"
+export PATH="$SUPABASE_HOME/bin:$PATH"
 
-# Local bin
-LOCAL_BIN="$HOME/.local/bin"
-export PATH="$LOCAL_BIN:$PATH"
+# Bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
 
 # Angular -- Load angular cli autocompletion
-source <(ng completion script)
+# source <(ng completion script)
 
-# ==================================================================================
-# End of .bash_loaders
-# ==================================================================================
+# PIO
+# export PLATFORMIO_HOME="$HOME/.local/bin"
+# export PATH=$PATH:$PLATFORMIO_HOME
+
+# Android SDK
+# java-25-openjdkexport ANDROID_HOME=$HOME/Android/Sdk
+# export PATH=$PATH:/opt/android-studio/bin
+# export PATH=$PATH:$ANDROID_HOME/emulator
+# export PATH=$PATH:$ANDROID_HOME/platform-tools
+# export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin
+
+# SDKMAN (for JVM toolchains)
+# export SDKMAN_DIR="$HOME/.sdkman"
+# export PATH="$PATH:$HOME/.sdkman/candidates/java/current/bin"
+# [[ -s "$SDKMAN_DIR/bin/sdkman-init.sh" ]] && source "$SDKMAN_DIR/bin/sdkman-init.sh"
+
+# Symfony
+# export SYMFONY_HOME="$HOME/.symfony5"
+# export PATH="$SYMFONY_HOME/bin:$PATH"
+
+# Pyenv (python versions manager)
+# export PYENV_ROOT="$HOME/.pyenv"
+# [[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+# eval "$(pyenv init - bash)"
+
+# Golang
+# export GOPATH="$HOME/go"
+# export PATH="$GOPATH/bin:$PATH"
+
+# Opencode
+# export OPENCODE_HOME="$HOME/.opencode"
+# export PATH="$OPENCODE_HOME/bin:$PATH"
