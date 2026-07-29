@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # ==================================================================================
 # .FILE
 #   .bash_aliases
@@ -27,17 +28,30 @@
 #   Changelog     : 316022d
 #
 # .EXAMPLE
-#   $ lg        # opens lazygit
+#   $ lgit      # opens lazygit
 #   $ ..        # go up one directory
 #   $ pacu      # update Arch system
 # ==================================================================================
 
 # Git
-# See https://github.com/ZouariOmar/dot-files/blob/ba66e63e66659133b5a73090e918925d86e716d9/bash/.bashrc
 alias lg='lazygit' # Open `lazygit`
+# alias ga='git add'             # Add files to staging
+# alias gaa='git add --all'      # Add all files to Git
+# alias gc='git commit'          # Commit changes
+# alias gca='git commit --amend' # Amend the last commit
+# alias gc='git checkout'        # Checkout a branch or file
+# alias gcb='git checkout -b'    # Create a new Git branch and move to the new branch at the same time
+# alias gl='git log --oneline'   # Show the log as a single line
+# alias gs='git status'          # Check the status of your git repo
+# alias gd='git diff'            # View the difference
+# alias gdc='git diff --cached'  # View the cached difference
 
 # Docker
-# See https://github.com/ZouariOmar/dot-files/blob/ba66e63e66659133b5a73090e918925d86e716d9/bash/.bashrc
+alias ldocker='lazydocker' # Open lazydocker
+# alias dps="docker ps"          # List running containers
+# alias dimages="docker images"  # List Docker images
+# alias dbuild="docker build -t" # Build a Docker image
+# alias dstop="docker stop"      # Stop a running container
 
 # Navigation
 alias ls='lsd'            # Use 'lsd' for a modern and colorful 'ls' alternative

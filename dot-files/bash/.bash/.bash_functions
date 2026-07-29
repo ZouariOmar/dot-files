@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # ==================================================================================
 # .FILE
 #   .bash_functions
@@ -48,7 +49,7 @@
 paccc() {
   local pkgs
   pkgs=$(pacman -Qtdq)
-  [ -n "$pkgs" ] && sudo pacman -Rns $pkgs
+  [ -n "$pkgs" ] && sudo pacman -Rns "$pkgs"
 }
 
 # -----------------------------------------
@@ -68,7 +69,7 @@ paccc() {
 yaycc() {
   local pkgs
   pkgs=$(yay -Qtdq)
-  [ -n "$pkgs" ] && sudo yay -Rns $pkgs
+  [ -n "$pkgs" ] && sudo yay -Rns "$pkgs"
 }
 
 # -----------------------------------------
@@ -110,6 +111,7 @@ n() {
   nnn "$@"
 
   if [ -f "$NNN_TMPFILE" ]; then
+    # shellcheck disable=SC1090
     . "$NNN_TMPFILE"
     rm -f "$NNN_TMPFILE"
   fi
@@ -249,8 +251,8 @@ cheat() {
 #     return 1
 #   fi
 #
-#   local KDBX_PATH="kdbx_path"
-#   local KEYFILE="keyfile"
+#   local KDBX_PATH="path_to_kdbx_file"
+#   local KEYFILE="path_to_kdbx_key_file"
 #   local entry=$2
 #   local attribute=$1
 #   local value

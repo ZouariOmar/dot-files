@@ -20,22 +20,20 @@
 #   Environment settings, shell behavior configurations, and aliases.
 #
 # .NOTES
-#   Version       : 1.3
+#   Version       : 1.4
 #   Author        : @ZouariOmar (zouariomar20@gmail.com)
 #   Created       : 2026-07-16
 #   Change Log    : 316022d
 #
 # .EXAMPLE
 #   N/A — this file is sourced automatically by the shell.
-#
-# shellcheck disable=SC1091
 # ==================================================================================
 
 # Bash theme
 POSH_THEME="blue-owl"
 eval "$(oh-my-posh init bash --config /home/zouari_omar/.local/share/themes/${POSH_THEME}.omp.json)"
 
-# Ignore duplicate commands in the history
+# Bash history mode
 HISTCONTROL=ignoredups
 
 # Bash home
@@ -44,17 +42,12 @@ BASH_HOME="$HOME/.bash"
 # Bash completion
 [[ -s /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion
 
-# Bash colors
-[[ -s ${BASH_HOME}/.bash_colors ]] && . "${BASH_HOME}/.bash_colors"
-
-# Bash aliases
-[[ -s ${BASH_HOME}/.bash_aliases ]] && . "${BASH_HOME}/.bash_aliases"
-
-# Bash functions
-[[ -s ${BASH_HOME}/.bash_functions ]] && . "${BASH_HOME}/.bash_functions"
-
-# Bash loaders
-[[ -s ${BASH_HOME}/.bash_loaders ]] && . "${BASH_HOME}/.bash_loaders"
-
-# Bash news
-[[ -s ${BASH_HOME}/.bash_news ]] && . "${BASH_HOME}/.bash_news"
+# Bash helper(s)
+if [ -d "$BASH_HOME" ]; then
+  for file in "$BASH_HOME"/.[!.]*; do
+    if [ -s "$file" ]; then
+      # shellcheck disable=SC1090
+      . "$file"
+    fi
+  done
+fi
