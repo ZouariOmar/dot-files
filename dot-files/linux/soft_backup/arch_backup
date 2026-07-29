@@ -93,6 +93,9 @@ sudo pacman -S neofetch
 # Install java
 sudo pacman -S jdk-openjdk
 
+# Install java 17
+sudo pacman -S jdk17-openjdk
+
 # Install libreoffice (still/fresh)
 sudo pacman -S libreoffice-still
 
@@ -189,7 +192,7 @@ sudo pacman -S nvm
 # Install lazygit
 sudo pacman -S lazygit
 
-# Install fd (fd-find)
+# Install fd (modern find)
 sudo pacman -S fd
 
 # Install xclip
@@ -410,3 +413,21 @@ sudo pacman -S --noconfirm aws-cli # or `aws-cli-v2`
 
 # Install jq (for json parsing)
 sudo pacman -S --noconfirm jq
+
+# Install flatpak
+sudo pacman -S --noconfirm flatpak
+
+# Install composer
+sudo pacman -S --noconfirm composer
+
+# Install gimp
+sudo pacman -S --noconfirm gimp
+
+# Install man (standard GNU package)
+sudo pacman -S --noconfirm man-db
+
+# Install man (developed primarily on OpenBSD)
+sudo pacman -S --noconfirm mandoc
+
+# Insall lazydocker
+yay -S lazydocker
