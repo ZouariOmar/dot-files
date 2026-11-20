@@ -1,0 +1,658 @@
+#!/usr/bin/env bash
+# =========================================
+# .FILE
+#   common
+#
+# .SYNOPSIS
+#   Shared library for the `import` and `export` scripts.
+#
+# .DESCRIPTION
+#   Sourced (never executed) by `import` and `export`. Provides:
+#     - colors and logging helpers (log_info, log_ok, log_warn, ...)
+#     - safe filesystem helpers: backup_existing, symlink, link_contents, place
+#     - template (regex) mode: {{NAME}} / {{NAME:default}} placeholders
+#       (has_template, template_vars, ask_var, render_file)
+#     - dot discovery and selection: discover, list_dots, menu, select_dots
+#   Every function is documented by its own header comment, which is also
+#   the source of the Sphinx API reference in docapi/.
+#
+# .PARAMETER
+#   None (library; see each function header)
+#
+# .INPUTS
+#   Caller-defined variables:
+#     DOT_FILES_DIR  directory holding the dots (required)
+#     DRY_RUN        true = print instead of act
+#     ASSUME_YES     true = never prompt, use template defaults
+#     NO_TEMPLATE    true = disable template rendering
+#     BACKUP_DIR     backup location (default ~/.dot-files-backup/<timestamp>)
+#
+# .OUTPUTS
+#   Colored messages on stdout (errors on stderr). Shared state variables:
+#   NAMES, DESCS, ALL, SELECTED, REQUESTED, VARS.
+#
+# .NOTES
+#   Version       : 2.0
+#   Author        : @ZouariOmar (zouariomar20@gmail.com)
+#   Created       : 2026-08-26
+#   Updated       : 2026-11-20
+#   Change Log    : CHANGELOG
+#   Requires      : bash >= 4.4, coreutils, sed, grep, find, diff, cmp
+#
+# .EXAMPLE
+#   DOT_FILES_DIR="$PWD/dots"
+#   . lib/common
+#   discover && select_dots
+#   link_contents "$DOT_FILES_DIR/git" "$HOME"
+#
+# shellcheck disable=SC2034
+# =========================================
+set -euo pipefail
+
+readonly RESET=$'\e[0m'
+readonly BOLD=$'\e[1m'
+readonly RED=$'\e[31m'
+readonly GREEN=$'\e[32m'
+readonly YELLOW=$'\e[33m'
+readonly BLUE=$'\e[34m'
+readonly CYAN=$'\e[36m'
+# One timestamped backup dir per run; previous backups are never overwritten
+BACKUP_DIR="${BACKUP_DIR:-$HOME/.dot-files-backup/$(date +%Y%m%d-%H%M%S)}"
+
+# -----------------------------------------
+# .FUNCTION
+#   log_info
+# .SYNOPSIS
+#   Print an informational message.
+# .DESCRIPTION
+#   Print an informational message with a colored prefix.
+#   Arguments are joined with spaces.
+# .PARAMETERS
+#   $*  message text
+# .EXAMPLES
+#   log_info "Already linked: ~/.bashrc"
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-08-26
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+log_info() { echo -e "${BLUE}[INFO]${RESET} $*"; }
+# -----------------------------------------
+# .FUNCTION
+#   log_ok
+# .SYNOPSIS
+#   Print a success message.
+# .DESCRIPTION
+#   Print a success message with a colored prefix.
+#   Arguments are joined with spaces.
+# .PARAMETERS
+#   $*  message text
+# .EXAMPLES
+#   log_ok "nvim done"
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-08-26
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+log_ok() { echo -e "${GREEN}[OK]${RESET} $*"; }
+# -----------------------------------------
+# .FUNCTION
+#   log_warn
+# .SYNOPSIS
+#   Print a warning message.
+# .DESCRIPTION
+#   Print a warning message with a colored prefix.
+#   Arguments are joined with spaces.
+# .PARAMETERS
+#   $*  message text
+# .EXAMPLES
+#   log_warn "hyper is empty"
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-08-26
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+log_warn() { echo -e "${YELLOW}[WARN]${RESET} $*"; }
+# -----------------------------------------
+# .FUNCTION
+#   log_error
+# .SYNOPSIS
+#   Print an error message (to stderr).
+# .DESCRIPTION
+#   Print an error message (to stderr) with a colored prefix.
+#   Arguments are joined with spaces.
+# .PARAMETERS
+#   $*  message text
+# .EXAMPLES
+#   log_error "Unknown dot: foo"
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-08-26
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+log_error() { echo -e "${RED}[ERROR]${RESET} $*" >&2; }
+# -----------------------------------------
+# .FUNCTION
+#   log_section
+# .SYNOPSIS
+#   Print a section banner.
+# .DESCRIPTION
+#   Print a section banner with a colored prefix.
+#   Arguments are joined with spaces.
+# .PARAMETERS
+#   $*  message text
+# .EXAMPLES
+#   log_section "nvim"
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-08-26
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+log_section() { echo -e "${BLUE}============== $* ==============${RESET}\n"; }
+
+# -----------------------------------------
+# .FUNCTION
+#   backup_existing
+# .SYNOPSIS
+#   Move an existing path into the backup dir.
+# .DESCRIPTION
+#   If <path> exists (file, directory or symlink) it is
+#   moved to $BACKUP_DIR mirroring its full path, so
+#   nothing is ever overwritten. No-op otherwise.
+# .PARAMETERS
+#   $1  path to back up
+# .EXAMPLES
+#   backup_existing "$HOME/.gitconfig"
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-11-20
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+backup_existing() {
+  local target="$1" bak
+  [[ -e "$target" || -L "$target" ]] || return 0
+  bak="$BACKUP_DIR/${target#/}"
+  mkdir -p "$(dirname "$bak")"
+  log_warn "Backup: $target ${CYAN}->${RESET} $bak"
+  mv "$target" "$bak"
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   symlink
+# .SYNOPSIS
+#   Create a symbolic link, backing up any
+#   existing file or directory.
+# .DESCRIPTION
+#   Creates the destination parent directory
+#   as needed, backs up any existing file,
+#   directory, or foreign symlink at the
+#   destination into $BACKUP_DIR (mirroring its
+#   full path), then links src to dst.
+#   Already-correct links are left untouched
+#   (idempotent). Honors DRY_RUN=true (prints,
+#   changes nothing).
+# .PARAMETERS
+#   $1  src  absolute path of the real file/dir
+#   $2  dst  path where the link is created
+# .EXAMPLES
+#   symlink "$PWD/dots/git/.gitconfig" "$HOME/.gitconfig"
+#   DRY_RUN=true symlink "$src" "$dst"
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-01-01
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+symlink() {
+  local src="$1" dst="$2"
+
+  if [[ -L "$dst" && "$(readlink "$dst")" == "$src" ]]; then
+    log_info "Already linked: $dst"
+    return 0
+  fi
+
+  if [[ "${DRY_RUN:-false}" == true ]]; then
+    log_info "[dry-run] $dst ${CYAN}->${RESET} $src"
+    return 0
+  fi
+
+  mkdir -p "$(dirname "$dst")"
+  backup_existing "$dst"
+  ln -s "$src" "$dst"
+  log_ok "Linked: $dst ${CYAN}->${RESET} $src"
+}
+
+# =========================================
+# Template (regex) mode
+#   {{NAME}} or {{NAME:default}} in a file is replaced at import time.
+#   NAME = [A-Z][A-Z0-9_]*   Values: -s NAME=VALUE, else prompt.
+# =========================================
+readonly TEMPLATE_RE='\{\{[A-Z][A-Z0-9_]*(:[^}]*)?\}\}'
+NO_TEMPLATE=false  # --no-template disables the mode globally
+declare -A VARS=() # NAME -> value (CLI -s, prompts; reused across dots)
+
+# -----------------------------------------
+# .FUNCTION
+#   has_template
+# .SYNOPSIS
+#   Tell whether a file/dir contains {{VAR}} placeholders.
+# .DESCRIPTION
+#   Searches text files only (binaries ignored). Returns 0
+#   when at least one placeholder is found. Always 1 when
+#   templating is disabled (--no-template or TEMPLATE=false
+#   in dot.conf).
+# .PARAMETERS
+#   $1  file or directory
+# .EXAMPLES
+#   has_template "$DOT_DIR/git/.gitconfig" && echo templated
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-11-20
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+has_template() {
+  [[ "$NO_TEMPLATE" != true && "${TEMPLATE:-true}" == true ]] || return 1
+  grep -rIqE -- "$TEMPLATE_RE" "$1" 2>/dev/null
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   template_vars
+# .SYNOPSIS
+#   List the placeholders of a file/dir.
+# .DESCRIPTION
+#   Prints one `NAME<TAB>default` line per distinct
+#   variable (default empty when none). First default wins.
+# .PARAMETERS
+#   $1  file or directory
+# .EXAMPLES
+#   template_vars ~/dots/git/.gitconfig
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-11-20
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+template_vars() {
+  grep -rIohE -- "$TEMPLATE_RE" "$1" 2>/dev/null |
+    sed -E 's/^\{\{([A-Z0-9_]+)(:([^}]*))?\}\}$/\1\t\3/' |
+    awk -F'\t' '!seen[$1]++'
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   ask_var
+# .SYNOPSIS
+#   Resolve the value of a template variable.
+# .DESCRIPTION
+#   Order: already known (VARS) -> dry-run placeholder ->
+#   default (when -y or no TTY) -> interactive prompt.
+#   Names containing PASS/TOKEN/SECRET/KEY are read silently.
+#   Without a TTY and no default, fails.
+# .PARAMETERS
+#   $1  variable name
+#   $2  default value (optional)
+# .EXAMPLES
+#   ask_var GIT_EMAIL "me@example.com"
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-11-20
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+ask_var() {
+  local name="$1" def="${2:-}" val="" secret=false hint=""
+  [[ -v "VARS[$name]" ]] && return 0
+
+  if [[ "${DRY_RUN:-false}" == true ]]; then
+    VARS[$name]="<$name>"
+    return 0
+  fi
+
+  if [[ ! -t 0 || "${ASSUME_YES:-false}" == true ]]; then
+    if [[ -n "$def" ]]; then
+      VARS[$name]="$def"
+      return 0
+    fi
+    [[ -t 0 ]] || {
+      log_error "No value for {{$name}} (use -s $name=VALUE)"
+      return 1
+    }
+  fi
+
+  [[ "$name" =~ (PASS|TOKEN|SECRET|KEY) ]] && secret=true
+  [[ -n "$def" ]] && hint=" [$def]"
+  while :; do
+    if $secret; then
+      read -rsp "Value for {{$name}}${hint}: " val </dev/tty
+      echo
+    else
+      read -rp "Value for {{$name}}${hint}: " val </dev/tty
+    fi
+    val="${val:-$def}"
+    [[ -n "$val" ]] && break
+    log_warn "A value is required."
+  done
+  VARS[$name]="$val"
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   render_file
+# .SYNOPSIS
+#   Render one template file to an output path.
+# .DESCRIPTION
+#   Replaces every {{NAME}} / {{NAME:default}} with its value
+#   from VARS (asking via ask_var when unknown), keeping the
+#   source file mode. Values are escaped for sed.
+# .PARAMETERS
+#   $1  source template file
+#   $2  output file
+# .EXAMPLES
+#   render_file dots/git/.gitconfig /tmp/out
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-11-20
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+render_file() {
+  local src="$1" out="$2" name def val
+  local -a expr=()
+  # fd 3 (not stdin) so ask_var still sees the terminal
+  while IFS=$'\t' read -r -u 3 name def; do
+    [[ -n "$name" ]] || continue
+    ask_var "$name" "$def" || return 1
+    val="$(printf '%s' "${VARS[$name]}" | sed -e 's/[\\|&]/\\&/g')"
+    expr+=(-e "s|\{\{${name}(:[^}]*)?\}\}|${val}|g")
+  done 3< <(template_vars "$src")
+  sed -E "${expr[@]}" "$src" >"$out"
+  chmod --reference="$src" "$out" 2>/dev/null || true
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   place
+# .SYNOPSIS
+#   Put one repo entry on the host: render or symlink.
+# .DESCRIPTION
+#   If the entry contains {{VAR}} placeholders it is copied
+#   to <dst> with the placeholders replaced (the repo file
+#   is never modified). Otherwise it is symlinked. Existing
+#   targets are backed up; identical results are left as-is.
+#   Directories are rendered file by file.
+# .PARAMETERS
+#   $1  src  repo file or directory
+#   $2  dst  destination path
+# .EXAMPLES
+#   place "$DOT_DIR/.gitconfig" "$HOME/.gitconfig"
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-11-20
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+place() {
+  local src="$1" dst="$2" tmp f
+  if ! has_template "$src"; then
+    symlink "$src" "$dst"
+    return
+  fi
+
+  if [[ "${DRY_RUN:-false}" == true ]]; then
+    template_vars "$src" | while IFS=$'\t' read -r f _; do
+      log_info "[dry-run] {{$f}} needed by $dst"
+    done
+    log_info "[dry-run] render $dst ${CYAN}<-${RESET} $src"
+    return 0
+  fi
+
+  tmp="$(mktemp -d)"
+  if [[ -d "$src" ]]; then
+    cp -a "$src" "$tmp/out"
+    while IFS= read -r -d '' f; do
+      has_template "$f" || continue
+      render_file "$f" "$f.rendered" || {
+        rm -rf "$tmp"
+        return 1
+      }
+      mv "$f.rendered" "$f"
+    done < <(find "$tmp/out" -type f -print0)
+    if [[ -d "$dst" && ! -L "$dst" ]] && diff -rq "$tmp/out" "$dst" >/dev/null 2>&1; then
+      log_info "Already up to date: $dst"
+      rm -rf "$tmp"
+      return 0
+    fi
+  else
+    render_file "$src" "$tmp/out" || {
+      rm -rf "$tmp"
+      return 1
+    }
+    if [[ -f "$dst" && ! -L "$dst" ]] && cmp -s "$tmp/out" "$dst"; then
+      log_info "Already up to date: $dst"
+      rm -rf "$tmp"
+      return 0
+    fi
+  fi
+
+  mkdir -p "$(dirname "$dst")"
+  backup_existing "$dst"
+  mv "$tmp/out" "$dst"
+  rm -rf "$tmp"
+  log_ok "Rendered: $dst ${CYAN}<-${RESET} $src"
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   link_contents
+# .SYNOPSIS
+#   Symlink every entry of a directory into
+#   a destination directory.
+# .DESCRIPTION
+#   Hidden files are included; `dot.conf` and
+#   `import`/`export` (per-dot metadata) are skipped.
+#   Each entry goes through place(): rendered when
+#   it holds {{VAR}} placeholders, symlinked otherwise;
+#   backups and DRY_RUN are honored.
+# .PARAMETERS
+#   $1  src_dir  directory whose entries are linked
+#   $2  dst_dir  directory receiving the links
+# .EXAMPLES
+#   link_contents "$DOT_DIR" "$HOME/.config/nvim"
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-11-20
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+link_contents() {
+  local src_dir="$1" dst_dir="$2" entry name rc=0
+  shopt -s dotglob nullglob
+  for entry in "$src_dir"/*; do
+    name="$(basename "$entry")"
+    [[ "$name" == "dot.conf" || "$name" == "import" || "$name" == "export" ]] && continue
+    place "$entry" "$dst_dir/$name" || rc=1
+  done
+  shopt -u dotglob nullglob
+  return "$rc"
+}
+
+NAMES=()
+declare -A DESCS=()
+
+# -----------------------------------------
+# .FUNCTION
+#   discover
+# .SYNOPSIS
+#   Find every available dot.
+# .DESCRIPTION
+#   Scans $DOT_FILES_DIR/*/ and fills the NAMES
+#   array and the DESCS map (from each dot.conf
+#   DESC). Adding a directory is enough to add a dot.
+# .EXAMPLES
+#   discover; echo "${NAMES[@]}"
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-11-20
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+discover() {
+  local d name DESC
+  shopt -s nullglob
+  for d in "$DOT_FILES_DIR"/*/; do
+    name="$(basename "$d")"
+    DESC=""
+    # shellcheck disable=SC1091
+    [[ -f "$d/dot.conf" ]] && . "$d/dot.conf"
+    NAMES+=("$name")
+    DESCS[$name]="$DESC"
+  done
+  shopt -u nullglob
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   list_dots
+# .SYNOPSIS
+#   Print the numbered list of dots.
+# .DESCRIPTION
+#   One line per dot: index, name, description.
+# .EXAMPLES
+#   ./import -l
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-11-20
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+list_dots() {
+  local i=1 n
+  for n in "${NAMES[@]}"; do
+    printf '  %s%2d)%s %-14s %s\n' "$CYAN" "$i" "$RESET" "$n" "${DESCS[$n]}"
+    i=$((i + 1))
+  done
+}
+
+ALL=false    # select every dot (set by -a)
+SELECTED=()  # dots chosen for the current run
+REQUESTED=() # dot names given on the command line
+
+# -----------------------------------------
+# .FUNCTION
+#   menu
+# .SYNOPSIS
+#   Interactively choose which dots to use.
+# .DESCRIPTION
+#   Lists the dots and reads a selection into the
+#   SELECTED array. Accepts numbers and/or names;
+#   'a' selects all, 'q' quits. Requires a TTY.
+# .OPTIONS
+#   a  all dots
+#   q  quit
+#   N  dot number from the list
+#   name  dot name
+# .EXAMPLES
+#   Select: 3 nvim   -> browsers + nvim
+#   Select: a        -> everything
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-11-20
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+menu() {
+  [[ -t 0 ]] || {
+    log_error "No TTY: pass dot names or -a."
+    exit 1
+  }
+  echo -e "${BOLD}Available dots:${RESET}"
+  list_dots
+  echo
+  local reply tok
+  read -rp "Select (numbers/names, 'a' = all, 'q' = quit): " reply
+  for tok in $reply; do
+    case "$tok" in
+    q) exit 0 ;;
+    a)
+      SELECTED=("${NAMES[@]}")
+      return
+      ;;
+    '') ;;
+    *[!0-9]*) SELECTED+=("$tok") ;;
+    *)
+      if ((tok >= 1 && tok <= ${#NAMES[@]})); then
+        SELECTED+=("${NAMES[tok - 1]}")
+      else
+        log_warn "Ignoring invalid number: $tok"
+      fi
+      ;;
+    esac
+  done
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   select_dots
+# .SYNOPSIS
+#   Resolve which dots a command works on.
+# .DESCRIPTION
+#   Fills SELECTED from, in order: ALL=true (every
+#   dot), REQUESTED (names given on the command
+#   line), or the interactive menu. Exits when
+#   nothing is selected or a name is unknown.
+# .EXAMPLES
+#   ALL=false REQUESTED=(nvim git) select_dots
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-11-20
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+select_dots() {
+  local n
+  if [[ "$ALL" == true ]]; then
+    SELECTED=("${NAMES[@]}")
+  elif ((${#REQUESTED[@]})); then
+    SELECTED=("${REQUESTED[@]}")
+  else
+    menu
+  fi
+
+  ((${#SELECTED[@]})) || {
+    log_warn "Nothing selected."
+    exit 0
+  }
+
+  for n in "${SELECTED[@]}"; do
+    [[ -d "$DOT_FILES_DIR/$n" ]] || {
+      log_error "Unknown dot: $n"
+      exit 1
+    }
+  done
+}

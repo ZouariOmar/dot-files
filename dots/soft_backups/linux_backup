@@ -78,6 +78,9 @@ npm install -g live-server
 # Install browder sync (support proxy server)
 npm install -g browser-sync
 
+# Install Angular-cli
+npm install -g @angular/cli
+
 # Install NVM
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
 
@@ -110,3 +113,9 @@ bun add -g vercel
 
 # Install uv (for python)
 curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# K3s
+curl -sfL https://get.k3s.io | sh -
+# Uninstall K3s
+# /usr/local/bin/k3s-uninstall.sh
+# /usr/local/bin/k3s-agent-uninstall.sh

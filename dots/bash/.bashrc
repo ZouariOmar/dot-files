@@ -31,7 +31,7 @@
 
 # Bash theme
 POSH_THEME="blue-owl"
-eval "$(oh-my-posh init bash --config /home/zouari_omar/.local/share/themes/${POSH_THEME}.omp.json)"
+eval "$(oh-my-posh init bash --config /home/{{LINUX_USERNAME}}/.local/share/themes/${POSH_THEME}.omp.json)"
 
 # Bash history mode
 HISTCONTROL=ignoredups

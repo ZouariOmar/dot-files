@@ -1,0 +1,453 @@
+#!/usr/bin/env bash
+# =========================================
+# .FILE
+#   export
+#
+# .SYNOPSIS
+#   Interactive exporter (host system -> compressed archive).
+#
+# .DESCRIPTION
+#   Packs the ACTUAL files currently on this machine (not the repo copies)
+#   into one compressed archive: for each chosen dot, every entry listed in
+#   dots/<name>/ is read from the dot's DEST (e.g. ~/.config/nvim) and
+#   copied (symlinks followed) into the archive. Missing files are skipped
+#   with a warning. Nothing on the host is modified.
+#
+#   With --to-repo it instead SYNCS the live host files back into dots/<name>/
+#   (overwriting the repo copies, which are first moved to the backup dir),
+#   so you can review and commit them. Entries already symlinked to the repo
+#   or holding {{VAR}} templates are left alone.
+#
+#   Dots are auto-discovered like `import` does (dots/*/), so a new dot is
+#   exportable with no change here. The archive holds one top-level folder
+#   per dot (plus its dot.conf / import / export files), so it extracts
+#   straight back into dots/.
+#
+#   Optional per-dot hook dots/<name>/export (sourced) may define:
+#     dot_export()  replaces the default copy; vars: DOT_NAME DOT_DIR DEST
+#                   STAGE_DIR (copy/generate files into $STAGE_DIR) DRY_RUN
+#   (e.g. gnome dumps live settings with `dconf dump`).
+#
+#   Formats: tar, gz, bz2, xz, zst, zip.
+#   NOTE: host configs may contain credentials/history (.aws, .git-credentials,
+#   .bash_history...). Keep exported archives private.
+#
+# .NOTES
+#   Version       : 2.0
+#   Author        : @ZouariOmar (zouariomar20@gmail.com)
+#
+# .EXAMPLE
+#   ./export                      # interactive menu + format prompt
+#   ./export -a -f zst -l 19      # everything, zstd level 19
+#   ./export nvim git -o ~/bk.tar.xz
+#   ./export -n -a                # dry-run
+#   ./export -r nvim git          # host -> dots/ (then git diff / commit)
+# =========================================
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly LIB_DIR="${LIB_DIR:-${SCRIPT_DIR}/lib}"
+readonly DOT_FILES_DIR="${DOT_FILES_DIR:-${SCRIPT_DIR}/dots}"
+DRY_RUN=false
+LIST=false
+ASSUME_YES=false
+FORMAT=""
+LEVEL=""
+OUTPUT=""
+TO_REPO=false
+PACKED=()
+STAGE=""
+
+if [[ -s "${LIB_DIR}/common" ]]; then
+  # shellcheck disable=SC1091
+  . "${LIB_DIR}/common"
+else
+  echo "[ERROR] Missing: ${LIB_DIR}/common" >&2
+  exit 1
+fi
+
+# -----------------------------------------
+# .FUNCTION
+#   help
+# .SYNOPSIS
+#   Print usage information.
+# .DESCRIPTION
+#   Shows options, supported formats and examples.
+# .OPTIONS
+#   -h, --help  show this message
+# .EXAMPLES
+#   ./export --help
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-11-20
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+help() {
+  cat <<HELP
+${CYAN}[FILE]${RESET}
+  export [options] [dot ...]
+
+${CYAN}[BRIEF]${RESET}
+  Pack your REAL host configs (not the repo copies) into one compressed
+  archive. Run without arguments for a menu.
+
+${CYAN}[OPTIONS]${RESET}
+  -a, --all           Export every dot
+  -l, --level N       Compression level 1-9 (zst: 1-19), default: tool default
+  -f, --format FMT    tar | gz | bz2 | xz | zst | zip   (default: asks / gz)
+  -o, --output FILE   Output path (default: ./host-dots-<timestamp>.<ext>)
+  -r, --to-repo       Sync host files INTO dots/<name>/ instead of an archive
+                      (repo copies are backed up first; templates skipped)
+  -L, --list          List available dots
+  -n, --dry-run       Show what would happen, change nothing
+  -y, --yes           Don't ask for confirmation
+  -h, --help          Show this help
+
+${CYAN}[EXAMPLES]${RESET}
+  ./export                       # menu
+  ./export -a -f zst -l 19       # everything, max zstd
+  ./export nvim git -o ~/bk.tar.xz
+  ./export -n -a                 # dry-run
+  ./export -r nvim git           # refresh repo copies from this host
+
+${CYAN}[WARNING]${RESET}
+  Host configs may contain credentials/history (git, aws, bash...). Keep archives private.
+HELP
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   format_ext
+# .SYNOPSIS
+#   Map a format name to its file extension.
+# .DESCRIPTION
+#   Prints the extension and returns 1 for an
+#   unsupported format.
+# .PARAMETERS
+#   $1  format (tar|gz|bz2|xz|zst|zip)
+# .EXAMPLES
+#   format_ext xz   # -> tar.xz
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-11-20
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+format_ext() {
+  case "$1" in
+  tar) echo "tar" ;;
+  gz) echo "tar.gz" ;;
+  bz2) echo "tar.bz2" ;;
+  xz) echo "tar.xz" ;;
+  zst) echo "tar.zst" ;;
+  zip) echo "zip" ;;
+  *) return 1 ;;
+  esac
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   choose_format
+# .SYNOPSIS
+#   Interactively choose format and level.
+# .DESCRIPTION
+#   Sets FORMAT (and LEVEL) when not already
+#   given on the command line. Without a TTY,
+#   falls back to gz.
+# .OPTIONS
+#   1-6  pick a format from the list
+#   Enter  keep the default (gz)
+# .EXAMPLES
+#   FORMAT="" choose_format
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-11-20
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+choose_format() {
+  local fmts=(tar gz bz2 xz zst zip) reply i
+  if [[ -z "$FORMAT" ]]; then
+    if [[ -t 0 ]]; then
+      echo -e "\n${BOLD}Compression format:${RESET}"
+      echo "   1) tar   no compression"
+      echo "   2) gz    fast, universal (default)"
+      echo "   3) bz2   smaller, slower"
+      echo "   4) xz    smallest common, slow"
+      echo "   5) zst   fast + small (needs zstd)"
+      echo "   6) zip   Windows-friendly (needs zip)"
+      read -rp "Choose [1-6, Enter = gz]: " reply
+      if [[ "$reply" =~ ^[1-6]$ ]]; then
+        i=$((reply - 1))
+        FORMAT="${fmts[i]}"
+      fi
+    fi
+    FORMAT="${FORMAT:-gz}"
+  fi
+  if [[ -z "$LEVEL" && "$FORMAT" != tar && -t 0 ]]; then
+    read -rp "Compression level [1-9, Enter = default]: " LEVEL
+  fi
+  if [[ -n "$LEVEL" && ! "$LEVEL" =~ ^[0-9]+$ ]]; then
+    log_error "Invalid level: $LEVEL"
+    exit 1
+  fi
+  return 0
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   stage_dot
+# .SYNOPSIS
+#   Collect one dot's live host files into STAGE.
+# .DESCRIPTION
+#   Loads dot.conf (DEST) and the optional export
+#   hook, then either runs dot_export() or copies
+#   each entry named in dots/<name>/ from DEST
+#   (symlinks followed) into $STAGE/<name>/.
+#   Adds the dot to PACKED when something was
+#   collected. Read-only on the host; honors DRY_RUN.
+# .PARAMETERS
+#   $1  name of the dot (directory under dots/)
+# .EXAMPLES
+#   stage_dot nvim
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-11-20
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+stage_dot() {
+  local DOT_NAME="$1" DESC=""
+  local DOT_DIR="$DOT_FILES_DIR/$1"
+  local DEST="$HOME"
+  local STAGE_DIR="$STAGE/$1" TEMPLATE=true
+  [[ "$TO_REPO" == true ]] && STAGE_DIR="$DOT_DIR"
+  local entry name found=0
+  unset -f dot_export
+
+  # shellcheck disable=SC1091
+  [[ -f "$DOT_DIR/dot.conf" ]] && . "$DOT_DIR/dot.conf"
+  # shellcheck disable=SC1091
+  [[ -f "$DOT_DIR/export" ]] && . "$DOT_DIR/export"
+
+  log_section "$DOT_NAME"
+  mkdir -p "$STAGE_DIR"
+
+  if declare -F dot_export >/dev/null; then
+    if [[ "$TO_REPO" == true && "$DRY_RUN" != true ]]; then
+      mkdir -p "$BACKUP_DIR/${DOT_DIR#/}"
+      cp -a "$DOT_DIR/." "$BACKUP_DIR/${DOT_DIR#/}/"
+      log_warn "Backup: $DOT_DIR ${CYAN}->${RESET} $BACKUP_DIR/${DOT_DIR#/}"
+    fi
+    dot_export
+    found=$(find "$STAGE_DIR" -type f | wc -l)
+    [[ "$DRY_RUN" == true || "$TO_REPO" == true ]] && found=1
+  else
+    shopt -s dotglob nullglob
+    for entry in "$DOT_DIR"/*; do
+      name="$(basename "$entry")"
+      [[ "$name" == dot.conf || "$name" == import || "$name" == export ]] && continue
+      if [[ -e "$DEST/$name" ]]; then
+        if [[ "$TO_REPO" == true ]]; then
+          if [[ "$(realpath "$DEST/$name")" == "$(realpath "$entry")" ]]; then
+            log_info "Already the repo copy (symlink): $DEST/$name"
+            continue
+          fi
+          if has_template "$entry"; then
+            log_warn "Template in repo, not overwritten: $name (edit dots/$DOT_NAME/$name by hand)"
+            continue
+          fi
+        fi
+        if [[ "$DRY_RUN" == true ]]; then
+          log_info "[dry-run] $DEST/$name ${CYAN}->${RESET} $STAGE_DIR/$name"
+        else
+          [[ "$TO_REPO" == true ]] && backup_existing "$STAGE_DIR/$name"
+          cp -aL "$DEST/$name" "$STAGE_DIR/$name"
+          log_ok "Collected: $DEST/$name"
+        fi
+        found=$((found + 1))
+      else
+        log_warn "Not on this host: $DEST/$name"
+      fi
+    done
+    shopt -u dotglob nullglob
+  fi
+
+  if ((found == 0)); then
+    log_warn "$DOT_NAME: nothing to export, skipping."
+    [[ "$TO_REPO" == true ]] || rm -rf "$STAGE_DIR"
+    return 0
+  fi
+
+  # Keep metadata so the archive extracts back into dots/
+  if [[ "$DRY_RUN" != true && "$TO_REPO" != true ]]; then
+    for name in dot.conf import export; do
+      [[ -f "$DOT_DIR/$name" ]] && cp -a "$DOT_DIR/$name" "$STAGE_DIR/$name"
+    done
+  fi
+  PACKED+=("$DOT_NAME")
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   build_archive
+# .SYNOPSIS
+#   Create the archive from the staged dots.
+# .DESCRIPTION
+#   Runs tar (with the matching compressor) or
+#   zip from inside STAGE so each dot is a
+#   top-level folder. Checks the needed tool
+#   exists and honors DRY_RUN.
+# .PARAMETERS
+#   $1  output file path
+# .EXAMPLES
+#   build_archive "$PWD/host-backup.tar.xz"
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-11-20
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+build_archive() {
+  local out="$1" need=tar lv=()
+  [[ -n "$LEVEL" ]] && lv=("-$LEVEL")
+  case "$FORMAT" in
+  gz) need=gzip ;;
+  bz2) need=bzip2 ;;
+  xz) need=xz ;;
+  zst) need=zstd ;;
+  zip) need=zip ;;
+  esac
+  command -v "$need" >/dev/null || {
+    log_error "Required tool not installed: $need"
+    return 1
+  }
+  [[ "$FORMAT" == zip ]] || command -v tar >/dev/null || {
+    log_error "Required tool not installed: tar"
+    return 1
+  }
+
+  if [[ "$DRY_RUN" == true ]]; then
+    log_info "[dry-run] ${PACKED[*]} ${CYAN}->${RESET} $out"
+    return 0
+  fi
+
+  mkdir -p "$(dirname "$out")"
+  rm -f "$out"
+  (
+    cd "$STAGE"
+    case "$FORMAT" in
+    tar) tar -cf "$out" -- "${PACKED[@]}" ;;
+    gz) tar -cf - -- "${PACKED[@]}" | gzip "${lv[@]}" >"$out" ;;
+    bz2) tar -cf - -- "${PACKED[@]}" | bzip2 "${lv[@]}" >"$out" ;;
+    xz) tar -cf - -- "${PACKED[@]}" | xz "${lv[@]}" -T0 >"$out" ;;
+    zst) tar -cf - -- "${PACKED[@]}" | zstd "${lv[@]}" -T0 -q -o "$out" ;;
+    zip) zip -qr "${lv[@]}" "$out" -- "${PACKED[@]}" ;;
+    esac
+  )
+  log_ok "Created: $out ($(du -h "$out" | cut -f1))"
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+  -h | --help)
+    help
+    exit 0
+    ;;
+  -a | --all)
+    # shellcheck disable=SC2034 # consumed by select_dots in lib/common
+    ALL=true
+    ;;
+  -L | --list) LIST=true ;;
+  -r | --to-repo) TO_REPO=true ;;
+  -n | --dry-run) DRY_RUN=true ;;
+  -y | --yes) ASSUME_YES=true ;;
+  -f | --format)
+    FORMAT="${2:-}"
+    shift
+    ;;
+  -l | --level)
+    LEVEL="${2:-}"
+    shift
+    ;;
+  -o | --output)
+    OUTPUT="${2:-}"
+    shift
+    ;;
+  -*)
+    log_error "Unknown option: $1"
+    help
+    exit 1
+    ;;
+  *) REQUESTED+=("$1") ;;
+  esac
+  shift
+done
+
+discover
+((${#NAMES[@]})) || {
+  log_error "No dots found in $DOT_FILES_DIR"
+  exit 1
+}
+
+if $LIST; then
+  list_dots
+  exit 0
+fi
+
+select_dots
+
+if $TO_REPO; then
+  if [[ -n "$FORMAT$LEVEL$OUTPUT" ]]; then
+    log_warn "-f/-l/-o are ignored with --to-repo (no archive is made)."
+  fi
+  if ! $ASSUME_YES && ! $DRY_RUN && [[ -t 0 ]]; then
+    echo -e "\nWill ${BOLD}overwrite the repo copies${RESET} of: ${BOLD}${SELECTED[*]}${RESET}"
+    echo "(old copies are moved to $BACKUP_DIR)"
+    read -rp "Continue? [Y/n] " ans
+    [[ "${ans:-Y}" =~ ^[Yy]$ ]] || {
+      log_info "Aborted."
+      exit 0
+    }
+  fi
+  for n in "${SELECTED[@]}"; do
+    stage_dot "$n" || log_error "$n failed."
+  done
+  log_info "Synced: ${PACKED[*]:-nothing}. Review with: git -C $SCRIPT_DIR status"
+  exit 0
+fi
+
+choose_format
+EXT="$(format_ext "$FORMAT")" || {
+  log_error "Unsupported format: $FORMAT (tar|gz|bz2|xz|zst|zip)"
+  exit 1
+}
+OUTPUT="${OUTPUT:-$PWD/host-dots-$(date +%Y%m%d-%H%M%S).$EXT}"
+
+if ! $ASSUME_YES && ! $DRY_RUN && [[ -t 0 ]]; then
+  echo -e "\nWill export from this host: ${BOLD}${SELECTED[*]}${RESET}"
+  echo -e "Format: ${BOLD}$FORMAT${RESET}${LEVEL:+ (level $LEVEL)}  ->  ${CYAN}$OUTPUT${RESET}"
+  read -rp "Continue? [Y/n] " ans
+  [[ "${ans:-Y}" =~ ^[Yy]$ ]] || {
+    log_info "Aborted."
+    exit 0
+  }
+fi
+
+STAGE="$(mktemp -d)"
+trap 'rm -rf "$STAGE"' EXIT
+for n in "${SELECTED[@]}"; do
+  stage_dot "$n" || log_error "$n failed."
+done
+
+((${#PACKED[@]})) || {
+  log_warn "Nothing collected, no archive created."
+  exit 0
+}
+build_archive "$OUTPUT"

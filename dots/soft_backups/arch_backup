@@ -54,11 +54,14 @@ sudo pacman -S cmake
 # Install ccache (compiler cache)
 sudo pacman -S ccache
 
-# Install nodejs and npm
-sudo pacman -Syu nodejs npm
+# Install nodejs
+sudo pacman -S nodejs
+
+# Install npm
+sudo pacman -S npm
 
 # Install yarn
-sudo pacman -Sy yarn
+sudo pacman -S yarn
 
 # Install Qt6 base development pkgs
 sudo pacman -S qtcreator-devel qtcreator qt6-base qt6-3d qt6-multimedia qt6-network qt6-tools qt6-svg qt6-wayland
@@ -67,7 +70,7 @@ sudo pacman -S qtcreator-devel qtcreator qt6-base qt6-3d qt6-multimedia qt6-netw
 sudo pacman -S doxygen
 
 # Install postman
-sudo yay -S postman-bin
+yay -S postman-bin
 
 # Install php
 sudo pacman -S php
@@ -76,11 +79,11 @@ sudo pacman -S php
 sudo pacman -S phpmyadmin
 
 # Install php extensions
-sudo pacman -S php-fpm \
-  php-mysql \ 
-php-gd \
-  php-redis \
-  php-igbinary
+sudo pacman -S php-fpm      \
+               php-mysql    \ 
+               php-gd       \
+               php-redis    \
+               php-igbinary
 
 # Install OBS
 sudo pacman -S obs-studio
@@ -91,7 +94,10 @@ sudo pacman -S unzip
 # Install neofetch
 sudo pacman -S neofetch
 
-# Install java
+# Install fastfetch
+sudo pacman -S fastfetch
+
+# Install java (latest)
 sudo pacman -S jdk-openjdk
 
 # Install java 17
@@ -101,7 +107,7 @@ sudo pacman -S jdk17-openjdk
 sudo pacman -S libreoffice-still
 
 # Install Uncomplicated Firewall
-sudo pacman -S ufw && sudo systemctl enable ufw && sudo systemctl start ufw
+sudo pacman -S ufw
 
 # Install Bash Completion
 sudo pacman -S bash-completion
@@ -181,7 +187,9 @@ sudo pacman -S openshot
 sudo pacman -S graphviz
 
 # Install texlive (for latex documantion, doxygen-latex)
-sudo pacman -S texlive
+sudo pacman -S texlive            \
+               texlive-langfrench \
+               texlive-latexextra
 
 # Install valgrind (debuging tool)
 sudo pacman -S valgrind
@@ -328,6 +336,14 @@ sudo pacman -Sy grup
 # Install GNS3 Prerequesits + docker
 yay -S qemu docker vpcs dynamips libvirt dnsmasq ubridge bridge-utils inetutils
 
+# Lxd - Modern, open-source system container and virtual machine manager 
+sudo pacman -S lxd
+
+# Lxcfs - Small FUSE (Filesystem in Userspace) filesystem that makes Linux
+# containers feel more like independent virtual machines by providing
+# container-aware views of system and resource files
+sudo pacman -S lxcfs
+
 # Install GNS3 Server and GUI
 yay -Sy gns3-server gns3-gui
 yay -Sy gns3-server-git gns3-gui-git # More stable
@@ -336,26 +352,23 @@ yay -Sy gns3-server-git gns3-gui-git # More stable
 sudo pacman -Sy nfs-utils
 
 # Install Vmware (workstation && player)
-yay -Sy vmware-keymaps vmware-workstation
+yay -S vmware-keymaps vmware-workstation
 
 # Install Linux headers
-sudo pacman -Sy linux-headers
+sudo pacman -S linux-headers
 
 # Install Gnome Boxes (VM)
 sudo pacman -S gnome-boxes
 
 # Install Packet-Tracer
-yay -Sy packettracer
+yay -S packettracer
 
 # Install VirtualBox
 sudo pacman -Sy virtualbox-host-modules-arch
 
-# Install Angular-cli
-npm install -g @angular/cli
-
 # Install ZeroTier
 # cli     ==> zerotier-cli
-# seerver ==> zerotier
+# server  ==> zerotier
 # service ==> zerotier-one
 yay -S zerotier-one
 
@@ -363,7 +376,7 @@ yay -S zerotier-one
 sudo pacman -U https://archive.archlinux.org/packages/p/python-pyqt5/python-pyqt5-5.15.11-2-x86_64.pkg.tar.zst
 
 # Install Intel Media Driver
-sudo pacman -Sy intel-media-driver
+sudo pacman -S intel-media-driver
 
 # Install wifite
 sudo pacman -S wifite
@@ -451,10 +464,6 @@ sudo pacman -S --noconfirm extension-manager
 # Install Blur y Sell
 yay -S gnome-shell-extension-blur-my-shell
 
-#################
-### HYPERLAND ###
-#################
-
 # Hyprland (window manager/compositor)
 sudo pacman -S --noconfirm hyprland
 
@@ -485,5 +494,32 @@ sudo pacman -S --noconfirm grim slurp
 # Install Terraform
 sudo pacman -S --noconfirm terraform
 
+# Install Bottles
+yay -S --noconfirm bottles
+
+# Install rclone
+sudo pacman -S --noconfirm rclone
+
 # Install Superfile (terminal file manager)
 sudo pacman -S --noconfirm superfile
+
+# Install UMU Launcher
+sudo pacman -S --noconfirm umu-launcher
+
+# Install mkfs.ntfs
+sudo pacman -S --noconfirm ntfsprogs
+
+# Install K8s cli tool
+sudo pacman -S --noconfirm kubectl
+
+# Install K9s 
+sudo pacman -S --noconfirm k9s
+
+# Install K3s
+yay -S --noconfirm k3s
+
+# Install Helm
+sudo pacman -S --noconfirm helm
+
+# Reflactor - Python script which can retrieve the latest mirror list from the Arch Linux Mirror Status page
+sudo pacman -S --noconfirm reflector

@@ -1,0 +1,231 @@
+#!/usr/bin/env bash
+# =========================================
+# .FILE
+#   import
+#
+# .SYNOPSIS
+#   Interactive dotfiles importer (repo -> system).
+#
+# .DESCRIPTION
+#   Auto-discovers every directory under dots/ and lets you pick which
+#   ones to import. To add a new dot, just create dots/<name>/ with
+#   your files -- no change to this script is needed.
+#
+#   Optional per-dot files:
+#     dots/<name>/dot.conf  (sourced) DESC="..."  DEST="$HOME/.config/x"
+#                           DEST defaults to $HOME.
+#     dots/<name>/import   (sourced) may define:
+#                             dot_import()   replaces the default symlinking
+#                             dot_post()     runs after importing
+#                           Vars available: DOT_NAME DOT_DIR DEST DRY_RUN
+#
+#   Template mode: files containing {{NAME}} / {{NAME:default}} are rendered
+#   (copied with values filled in, asked interactively or via -s NAME=VALUE)
+#   instead of symlinked. TEMPLATE=false in dot.conf disables it for a dot.
+#
+#   Default behaviour: every entry of dots/<name>/ (dot.conf, import and export
+#   excluded) is symlinked into DEST; existing targets are moved to
+#   ~/.dot-files-backup/<timestamp>/ (never overwritten).
+#
+# .NOTES
+#   Version       : 2.0
+#   Author        : @ZouariOmar (zouariomar20@gmail.com)
+#
+# .EXAMPLE
+#   ./import              # interactive menu
+#   ./import -a           # import everything
+#   ./import nvim git     # import only these
+#   ./import -n -a        # dry-run
+# =========================================
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+readonly LIB_DIR="${LIB_DIR:-${SCRIPT_DIR}/lib}"
+readonly DOT_FILES_DIR="${DOT_FILES_DIR:-${SCRIPT_DIR}/dots}"
+DRY_RUN=false
+LIST=false
+ASSUME_YES=false
+
+if [[ -s "${LIB_DIR}/common" ]]; then
+  # shellcheck disable=SC1091
+  . "${LIB_DIR}/common"
+else
+  echo "[ERROR] Missing: ${LIB_DIR}/common" >&2
+  exit 1
+fi
+
+# -----------------------------------------
+# .FUNCTION
+#   help
+# .SYNOPSIS
+#   Print usage information.
+# .DESCRIPTION
+#   Shows options, how to add a new dot and
+#   examples. The caller decides whether to exit.
+# .OPTIONS
+#   -h, --help  show this message
+# .EXAMPLES
+#   ./import --help
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-08-31
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+help() {
+  cat <<HELP
+${CYAN}[FILE]${RESET}
+  import [options] [dot ...]
+
+${CYAN}[BRIEF]${RESET}
+  Interactive dotfiles importer (repo -> system). Dots are auto-discovered from dots/*/.
+  Run without arguments for a menu.
+
+${CYAN}[OPTIONS]${RESET}
+  -a, --all        Install every dot
+  -l, --list       List available dots
+  -n, --dry-run    Show what would happen, change nothing
+  -y, --yes        Don't ask for confirmation (placeholders use defaults)
+  -s, --set N=V    Preset a {{N}} template variable (repeatable)
+  --no-template    Never render {{VAR}} placeholders, always symlink
+  -h, --help       Show this help
+
+${CYAN}[ADD A NEW DOT]${RESET}
+  mkdir dots/<name> && cp <your files> dots/<name>/
+  Optional: dots/<name>/dot.conf  (DESC="..." DEST="\$HOME/.config/<name>")
+            dots/<name>/import   (define dot_import / dot_post)
+
+${CYAN}[TEMPLATES]${RESET}
+  A file containing {{NAME}} or {{NAME:default}} (NAME uppercase) is copied,
+  not linked, with each placeholder replaced by the value you give (asked
+  once per name, or preset with -s). The repo file is never modified.
+  Opt out per dot with TEMPLATE=false in dot.conf.
+
+${CYAN}[EXAMPLES]${RESET}
+  ./import            # menu
+  ./import nvim git   # specific dots
+  ./import -n -a      # dry-run everything
+  ./import git -s GIT_EMAIL=me@x.io
+HELP
+}
+
+# -----------------------------------------
+# .FUNCTION
+#   import_dot
+# .SYNOPSIS
+#   Install a single dot.
+# .DESCRIPTION
+#   Loads dots/<name>/dot.conf (DESC, DEST) and the
+#   optional dots/<name>/import hook, then runs
+#   dot_import() if the hook defines it, else
+#   links (or renders templates of) the dot's contents into DEST. Runs
+#   dot_post() afterwards when defined.
+# .PARAMETERS
+#   $1  name of the dot (directory under dots/)
+# .OPTIONS
+#   DEST     target dir (dot.conf), default $HOME
+#   dot_import()  hook: replaces default linking
+#   dot_post()     hook: runs after import
+# .EXAMPLES
+#   import_dot nvim
+#   DRY_RUN=true import_dot git
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-11-20
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+import_dot() {
+  local DOT_NAME="$1" DESC="" TEMPLATE=true
+  local DOT_DIR="$DOT_FILES_DIR/$1"
+  local DEST="$HOME"
+  # Hooks may define these; reset so one dot's hook never leaks into the next
+  unset -f dot_import dot_post
+
+  # shellcheck disable=SC1091
+  [[ -f "$DOT_DIR/dot.conf" ]] && . "$DOT_DIR/dot.conf"
+  DEST="${DEST/#\$HOME/$HOME}" # tolerate a literal "$HOME" prefix
+  # shellcheck disable=SC1091
+  [[ -f "$DOT_DIR/import" ]] && . "$DOT_DIR/import"
+
+  log_section "$DOT_NAME"
+  if declare -F dot_import >/dev/null; then
+    dot_import
+  elif [[ -z "$(find "$DOT_DIR" -mindepth 1 -maxdepth 1 ! -name dot.conf ! -name import ! -name export -print -quit)" ]]; then
+    log_warn "$DOT_NAME is empty, skipping."
+    return 0
+  else
+    link_contents "$DOT_DIR" "$DEST" || {
+      log_error "$DOT_NAME: some entries failed."
+      return 1
+    }
+  fi
+  if declare -F dot_post >/dev/null; then dot_post; fi
+  log_ok "$DOT_NAME done."
+}
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+  -h | --help)
+    help
+    exit 0
+    ;;
+  -a | --all)
+    # shellcheck disable=SC2034 # consumed by select_dots in lib/common
+    ALL=true
+    ;;
+  -l | --list) LIST=true ;;
+  -n | --dry-run) DRY_RUN=true ;;
+  -y | --yes) ASSUME_YES=true ;;
+  --no-template)
+    # shellcheck disable=SC2034 # consumed by has_template in lib/common
+    NO_TEMPLATE=true
+    ;;
+  -s | --set)
+    [[ "${2:-}" =~ ^[A-Z][A-Z0-9_]*=.*$ ]] || {
+      log_error "Use: -s NAME=VALUE (NAME uppercase)"
+      exit 1
+    }
+    # shellcheck disable=SC2034 # consumed by ask_var in lib/common
+    VARS[${2%%=*}]="${2#*=}"
+    shift
+    ;;
+  -*)
+    log_error "Unknown option: $1"
+    help
+    exit 1
+    ;;
+  *) REQUESTED+=("$1") ;;
+  esac
+  shift
+done
+export DRY_RUN
+
+discover
+((${#NAMES[@]})) || {
+  log_error "No dots found in $DOT_FILES_DIR"
+  exit 1
+}
+
+if $LIST; then
+  list_dots
+  exit 0
+fi
+
+select_dots
+
+if ! $ASSUME_YES && ! $DRY_RUN && [[ -t 0 ]]; then
+  echo -e "\nWill import: ${BOLD}${SELECTED[*]}${RESET}"
+  read -rp "Continue? [Y/n] " ans
+  [[ "${ans:-Y}" =~ ^[Yy]$ ]] || {
+    log_info "Aborted."
+    exit 0
+  }
+fi
+
+$DRY_RUN && log_info "Dry-run mode: no changes will be made."
+for n in "${SELECTED[@]}"; do
+  import_dot "$n" || log_error "$n failed."
+done

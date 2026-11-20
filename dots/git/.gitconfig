@@ -1,4 +1,4 @@
 [user]
-	email = your_email
-	username = your_username
-	name = your_name
+	email = {{GIT_EMAIL}}
+  username = {{GIT_USERNAME}}
+	name = {{GIT_NAME}}

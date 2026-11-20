@@ -1,0 +1,33 @@
+# shellcheck shell=bash
+# Custom hook: GNOME settings are dconf dumps, not files to symlink.
+# -----------------------------------------
+# .FUNCTION
+#   dot_import
+# .SYNOPSIS
+#   Load GNOME settings with dconf.
+# .DESCRIPTION
+#   Overrides the default symlinking: loads
+#   org-/com-/system-settings.ini into /org/,
+#   /com/ and /system/. Honors DRY_RUN.
+# .EXAMPLES
+#   dconf load /org/ < org-settings.ini
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-11-20
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+dot_import() {
+  command -v dconf >/dev/null || { log_error "dconf not found"; return 1; }
+  local f
+  for f in org com system; do
+    [[ -f "$DOT_DIR/$f-settings.ini" ]] || continue
+    if [[ "$DRY_RUN" == true ]]; then
+      log_info "[dry-run] dconf load /$f/ < $f-settings.ini"
+    else
+      dconf load "/$f/" <"$DOT_DIR/$f-settings.ini"
+      log_ok "Loaded /$f/"
+    fi
+  done
+}

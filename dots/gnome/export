@@ -1,0 +1,31 @@
+# shellcheck shell=bash
+# -----------------------------------------
+# .FUNCTION
+#   dot_export
+# .SYNOPSIS
+#   Dump live GNOME settings with dconf.
+# .DESCRIPTION
+#   Overrides the default copy: writes the host's current
+#   /org/, /com/ and /system/ dconf trees to
+#   $STAGE_DIR/{org,com,system}-settings.ini (read-only).
+# .EXAMPLES
+#   dconf dump /org/ > org-settings.ini
+# .AUTHOR
+#   @ZouariOmar (zouariomar20@gmail.com)
+# .CREATED
+#   2026-11-20
+# .UPDATED
+#   2026-11-20
+# -----------------------------------------
+dot_export() {
+  command -v dconf >/dev/null || { log_error "dconf not found"; return 1; }
+  local f
+  for f in org com system; do
+    if [[ "$DRY_RUN" == true ]]; then
+      log_info "[dry-run] dconf dump /$f/ -> $f-settings.ini"
+    else
+      dconf dump "/$f/" >"$STAGE_DIR/$f-settings.ini"
+      log_ok "Dumped /$f/"
+    fi
+  done
+}
