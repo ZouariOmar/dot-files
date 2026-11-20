@@ -1,64 +1,76 @@
-# Changelog for dot-files
+# Dot Files Changelog
 
-All notable changes to this project will be documented in this file.
+<!--toc:start-->
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/).
+- [Dot Files Changelog](#dot-files-changelog)
+  - [unreleased](#unreleased)
+    - [Features](#features)
+    - [Refactor](#refactor)
+  - [1.0.1 - 2026-03-07](#1.0.1---2026-03-07)
+    - [Features](#features-1)
+  - [1.0.0 - 2026-03-06](#1.0.0---2026-03-06)
+    - [Features](#features-2)
+    - [Documentation](#documentation)
+    - [Performance](#performance)
+    - [Refactor](#refactor-1)
 
-## [1.0.1] - 2026-03-07
+<!--toc:end-->
 
-### Added
+## unreleased
 
-- `dot-files/` subdirectory consolidating all configuration modules (`bash`, `browsers`, `clang`, `docker`, `git`, `linux`, `neofetch`, `nvidia`, `nvim`, `obs`, `servers`, `vim`, `vscode`).
-- `res/` directory for project assets (logo).
-- `install_dot_files` installation script at the repository root.
+### Features
 
-### Removed
+- _(linux)_ Update linux backup files
+- _(bash)_ Add `.bash_dev_news` into `dot-files/bash/`
+- _(nvim)_ Add `go.nvim` plugin
+- _(linux)_ Update linux backup files
+- _(bash)_ Update `bash` files
+- _(linux)_ Update arch linux backup files
 
-- Removed top-level configuration directories (`bash/`, `browsers/`, `clang/`, `docker/`, `fonts/`, `git/`, `neofetch/`, `nvidia/`, `nvim/`, `obs/`, `root/`, `servers/`, `soft_backup/`, `vscode/`) — content moved under `dot-files/`.
-- `assets/logo.png` — replaced by `res/logo.png`.
-- `install_all` script — replaced by `install_dot_files`.
+### Refactor
 
-## [1.0.0] - 2026-01-01
+- _(bash)_ Modularize shell configuration
+- _(bash)_ Replace `.bash_dev_news` with modular `.bash_news`
+- _(dotfiles)_ Reorganize dotfiles structure
 
-### Added
+## 1.0.1 - 2026-03-07
 
-- Initial structured release of dot-files.
-- `CONTRIBUTING.md`, `CHANGELOG.md`, `CODE_OF_CONDUCT.md`, `SECURITY.md` project documentation.
-- `install_dot_files` bash script for automated installation.
-- Refactored project structure: reorganized `bash/`, added `soft_backup/`, `root/`, and other directories.
-- Multiple Neovim configuration improvements and snippet updates.
-- Bash `.bashrc` enhancements and shell automation scripts.
-- Linux backup file management (`arch_backup`, `linux_backup`).
-- Shell backup installation automation (`install_dot_files`).
+### Features
 
----
+- _(dot-files)_ Update project structure & `install_dot_files`
 
-<!--
-  Use this section to add more versions as needed, following the format below:
+## 1.0.0 - 2026-03-06
 
-## [X.Y.Z] - YYYY-MM-DD
-### Added
-- ...
+### Features
 
-### Changed
-- ...
+- _(DotFiles)_ 🚀 First commit
+- _(Bash)_ 🚀 Update the `.bashrc` file
+- _(nvim)_ 🚀 Update the `nvim` part
+- _(Bash)_ 🚀 Update the `Bash` part
+- _(dot-files)_ 🚀 Update the project
+- _(bash)_ Update `.bashrc` file
+- _(nvim)_ Update `java` snippet
+- _(git)_ Add `.git-credentials` pattern
+- _(linux)_ Update linux backup files
 
-### Deprecated
-- ...
+### Documentation
 
-### Removed
-- ...
+- _(dot-files)_ Update the `README.md` file
 
-### Fixed
-- ...
+### Performance
 
-### Security
-- ...
--->
+- _(Shell)_ ⚡ ️Automate the backup installation
+- _(Bash)_ 🚀 Update the `Bash` part
+- _(nvim)_ 🚀 Update the `Nvim` part
+- _(nvim)_ 🚀 Update the `Nvim` part
+- _(Bash)_ 🚀 Update the `Bash` part
+- _(nvim)_ 🚀 Update the `Nvim` part
+- _(bash)_ 🚀 Update `.bashrc`
+- _(linux)_ 🚀 Update linux backup files
+- _(bash)_ 🚀 Update bash files
+- _(linux)_ 🚀 Update linux backup files
+- _(linux)_ 🚀 Update linux backup file
 
-<!-- Link references for comparing changes between versions -->
+### Refactor
 
-> [!NOTE]
-> [1.0.1]: <https://github.com/ZouariOmar/dot-files/releases/tag/v1.0.1>
-> [1.0.0]: <https://github.com/ZouariOmar/dot-files/releases/tag/v1.0.0>
+- _(dot-files)_ Update project structure
