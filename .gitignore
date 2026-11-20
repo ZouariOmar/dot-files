@@ -1,0 +1,4 @@
+# Root .gitignore file
+
+docapi/_build/
+.venv/
