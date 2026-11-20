@@ -26,7 +26,7 @@
       " *",
       " * @category ${3:Category}",
       " * @package  ${4:Package}",
-      " * @author   ${5:@ZouariOmar (zouariomar20@gmail.com)",
+      " * @author   ${5:@{{GIT_USERNAME}}} (${3:{{GIT_EMAIL}}})",
       " * @license  ${6:GPL3.0 License}",
       " * @link     ${7:https://example.com}",
       " */",

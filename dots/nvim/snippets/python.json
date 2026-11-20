@@ -22,7 +22,7 @@
       "",
       "${2:Short description of this module.}",
       "",
-      "Author: ${3:@ZouariOmar} (${4:zouariomar20@gmail.com})",
+      "Author: ${3:{{GIT_USERNAME}}} (${4:{{GIT_EMAIL}}})",
       "Date: ${5:DD/MM/YYYY}",
       "License: ${6:GPL3.0}",
       "Version: ${7:0.1}",

@@ -17,12 +17,12 @@
     "body": [
       "/**",
       " * @file      ${1:filename.cpp}",
-      " * @author    ${2:@ZouariOmar} (${3:zouariomar20@gmail.com})",
+      " * @author    ${2:@{{GIT_USERNAME}}} (${3:{{GIT_EMAIL}}})",
       " * @brief     ${4:filename source file}",
       " * @version   ${5:0.1}",
       " * @date      ${6:DD/MM/YYYY}",
       " * @copyright Copyright (c) ${7:YYYY}",
-      " * @link      ${8:https://github.com/ZouariOmar} ${9:ZouariOmar} @endlink",
+      " * @link      ${8:filename-1.cpp} @endlink",
       " */"
     ],
     "description": "Doxygen-style file header for C++ source files"

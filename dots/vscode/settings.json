@@ -7,18 +7,10 @@
   "redhat.telemetry.enabled": false,
   "cmake.options.statusBarVisibility": "visible",
   "git.autofetch": true,
-  "cSpell.userWords": [
-    "Calcuse",
-    "Cframe",
-    "Crun",
-    "elif",
-    "leetcode",
-    "sqlplus",
-    "Zouari"
-  ],
+  "cSpell.userWords": [],
   "editor.linkedEditing": true,
-  "doxdocgen.generic.authorEmail": "zouariomar20@gmail.com",
-  "doxdocgen.generic.authorName": "@ZouariOmar",
+  "doxdocgen.generic.authorEmail": "{{GIT_EMAIL}}",
+  "doxdocgen.generic.authorName": "@{{GIT_USERNAME}}",
   "doxdocgen.generic.useGitUserEmail": false,
   "doxdocgen.generic.useGitUserName": false,
   "[html]": {
@@ -55,24 +47,16 @@
   "scm.inputFontSize": 14,
   "terminal.integrated.fontSize": 12,
   "editor.fontFamily": "'0xProto Nerd Font'",
-  "workbench.settings.applyToAllProfiles": [
-  
-  
-  
-
-  ],
+  "workbench.settings.applyToAllProfiles": [],
   "C_Cpp_Runner.useLinkTimeOptimization": true,
   "[qml]": {
     "editor.defaultFormatter": "theqtcompany.qt-qml"
   },
-  "qt-core.qtInstallationRoot": "/home/zouari_omar/Qt",
+  "qt-core.qtInstallationRoot": "/home/{{LINUX_USERNAME}}/Qt",
   "liveServer.settings.donotShowInfoMsg": true,
   "chat.commandCenter.enabled": false,
   "java.help.collectErrorLog": true,
-  "settingsSync.ignoredExtensions": [
-
-  ],
+  "settingsSync.ignoredExtensions": [],
   "workbench.activityBar.location": "top",
   "workbench.panel.showLabels": false
 }
-

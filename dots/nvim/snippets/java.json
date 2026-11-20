@@ -12,7 +12,7 @@
       " *     <li>${5:Additional features}</li>",
       " * </ul>",
       " *",
-      " * @author ${6:@ZouariOmar (zouariomar20@gmail.com)}",
+      " * @author ${6:@{{GIT_USERNAME}}} (${3:{{GIT_EMAIL}}})",
       " * @version ${7:1.0.0}",
       " * @since ${8:YYYY-MM-DD}",
       " * @deprecated ${9:Reason and alternative if deprecated}",

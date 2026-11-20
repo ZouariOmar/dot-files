@@ -99,10 +99,10 @@ chmod u+x import export
 Common commands:
 
 ```bash
-./import -n -a                   # preview everything, change nothing
-./import nvim git                # import selected dots
-./export -a -f zst -o ~/bk.tar.zst   # archive your live configs
-./export -r nvim                 # sync host files back into dots/
+./import -n -a                     # preview everything, change nothing
+./import nvim git                  # import selected dots
+./export -a -f zst -o ~/bk.tar.zst # archive your live configs
+./export -r nvim                   # sync host files back into dots/
 ```
 
 Build the API reference locally:

@@ -79,11 +79,11 @@ sudo pacman -S php
 sudo pacman -S phpmyadmin
 
 # Install php extensions
-sudo pacman -S php-fpm      \
-               php-mysql    \ 
-               php-gd       \
-               php-redis    \
-               php-igbinary
+sudo pacman -S php-fpm \
+  php-mysql \
+  php-gd \
+  php-redis \
+  php-igbinary
 
 # Install OBS
 sudo pacman -S obs-studio
@@ -187,9 +187,9 @@ sudo pacman -S openshot
 sudo pacman -S graphviz
 
 # Install texlive (for latex documantion, doxygen-latex)
-sudo pacman -S texlive            \
-               texlive-langfrench \
-               texlive-latexextra
+sudo pacman -S texlive \
+  texlive-langfrench \
+  texlive-latexextra
 
 # Install valgrind (debuging tool)
 sudo pacman -S valgrind
@@ -336,7 +336,7 @@ sudo pacman -Sy grup
 # Install GNS3 Prerequesits + docker
 yay -S qemu docker vpcs dynamips libvirt dnsmasq ubridge bridge-utils inetutils
 
-# Lxd - Modern, open-source system container and virtual machine manager 
+# Lxd - Modern, open-source system container and virtual machine manager
 sudo pacman -S lxd
 
 # Lxcfs - Small FUSE (Filesystem in Userspace) filesystem that makes Linux
@@ -512,7 +512,7 @@ sudo pacman -S --noconfirm ntfsprogs
 # Install K8s cli tool
 sudo pacman -S --noconfirm kubectl
 
-# Install K9s 
+# Install K9s
 sudo pacman -S --noconfirm k9s
 
 # Install K3s
